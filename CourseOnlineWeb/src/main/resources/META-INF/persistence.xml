@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="3.0" xmlns="https://jakarta.ee/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd">
+  <!-- Define Persistence Unit -->
+  <persistence-unit name="my_persistence_unit">
+    <class>com.co.pojo.LessonProgress</class>
+    <class>com.co.pojo.Enrollment</class>
+    <class>com.co.pojo.Course</class>
+    <class>com.co.pojo.Chapter</class>
+    <class>com.co.pojo.Review</class>
+    <class>com.co.pojo.Lesson</class>
+    <class>com.co.pojo.User</class>
+    <class>com.co.pojo.Payments</class>
+    <class>com.co.pojo.Qna</class>
+  </persistence-unit>
+</persistence>
