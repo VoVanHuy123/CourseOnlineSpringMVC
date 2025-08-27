@@ -81,6 +81,8 @@ public class Course implements Serializable {
     private User teacherId;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "courseId")
     private Set<Enrollment> enrollmentSet;
+    
+    
 
     public Course() {
     }

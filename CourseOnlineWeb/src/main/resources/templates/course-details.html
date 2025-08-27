@@ -1,0 +1,74 @@
+
+
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+    <th:object th:replace="base :: bt"></th:object>
+</head>
+<body>
+    <div th:replace="base :: menu"></div>
+
+    <main class="container">
+        <h1 class="text-center text-info mt-2">QUẢN LÝ KHÓA HỌC</h1>
+        <form method="post" th:object="${course}" th:action="@{/courses}" enctype="multipart/form-data">
+            <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" id="title" th:field="*{title}" placeholder="Tên khóa học">
+                <label for="name">Tên khóa học</label>
+            </div>
+            <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" id="description" th:field="*{description}" placeholder="Mô tả">
+                <label for="name">Mô tả</label>
+            </div>
+            <div clas="form-floating mb-3 mt-3">
+                <label>Ngày tạo:</label>
+                <input type="text" 
+                       class="form-control"
+                       th:value="${#dates.format(course.createdAt, 'dd/MM/yyyy')}" 
+                       readonly />
+            </div>
+            <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" id="tuitionFee" th:field="*{tuitionFee}" placeholder="Giá khóa học">
+                <label for="price">Giá khóa học</label>
+            </div>
+            <!--            <div class="form-floating mb-3 mt-3">
+                            <select class="form-select" id="sel1" th:field="*{categoryId}">
+                                <option th:each="c : ${categories}" th:value="${c.id}" th:text="${c.name}"></option>
+                            </select>
+                            <label for="sel1" class="form-label">Danh mục</label>
+            -->            </div>
+            <div class="form-floating mb-3 mt-3">
+                <input type="file" class="form-control" id="imageFile" th:field="*{imageFile}">
+                <label for="imageFile">Ảnh đại diện khóa học</label>
+            </div>
+            <div class="form-floating mb-3 mt-3" th:if="${course.imageUrl != null}">
+                <img th:src="${course.imageUrl}" width="200" />
+            </div>
+            <div class="form-floating mb-3 mt-3">
+                <input type="file" class="form-control" id="videoFile" th:field="*{videoFile}">
+                <label for="videoFile">Video giới thiệu</label>
+            </div>
+            <div class="form-floating mb-3 mt-3" th:if="${course.introVideoUrl != null}">
+                <label>Video giới thiệu:</label>
+                <video width="400" controls>
+                    <source th:src="${course.introVideoUrl}" type="video/mp4" />
+                    Trình duyệt của bạn không hỗ trợ video.
+                </video>
+            </div>
+            <!--            <div class="form-floating mb-3 mt-3">
+                            <input type="file" class="form-control" id="imageFile" th:field="*{imageFile}">
+                            <label for="imageFile">Ảnh đại diện khóa học</label>
+                        </div>-->
+            <div class="form-floating mb-3 mt-3">
+                <input type="hidden" th:field="*{id}" />
+                <input type="hidden" th:field="*{imageUrl}" />
+                <button  class="btn btn-success" th:if="${course.id == null}">Thêm khóa học</button>
+                <button  class="btn btn-success" th:unless="${course.id == null}">Cập nhật khóa học</button>
+            </div>
+        </form>
+    </main>
+
+    <div th:replace="base :: footer"></div>
+
+    <script th:src="@{/js/main.js}"></script>
+</body>
+</html>
