@@ -72,14 +72,14 @@ public class Course implements Serializable {
     @Column(name = "created_at")
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "courseId")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "courseId",orphanRemoval = true)
     private Set<Chapter> chapterSet;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "courseId")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "courseId",orphanRemoval = true)
     private Set<Review> reviewSet;
     @JoinColumn(name = "teacher_id", referencedColumnName = "id")
     @ManyToOne
     private User teacherId;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "courseId")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "courseId",orphanRemoval = true)
     private Set<Enrollment> enrollmentSet;
     
     

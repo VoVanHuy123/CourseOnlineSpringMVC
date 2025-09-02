@@ -4,7 +4,7 @@
  */
 package com.co.repositories;
 
-import com.co.pojo.Course;
+import com.co.pojo.Lesson;
 import java.util.List;
 import java.util.Map;
 
@@ -12,10 +12,10 @@ import java.util.Map;
  *
  * @author ACER
  */
-public interface CourseRepository {
-    public List<Course> getCourses(Map<String, String> params);
-    public Course getCourseById (int id);
-    public void addOrUpdate(Course c);
+public interface LessonRepository {
+    public List<Lesson> getLessons(Map<String,String> params);
+    public Lesson getLessonById(int id);
+    public void addOrUpdate(Lesson chapter);
     public void delete(int id);
-    public long countCourses(Map<String, String> params);
+    public long countLessons(Map<String, String> params);
 }

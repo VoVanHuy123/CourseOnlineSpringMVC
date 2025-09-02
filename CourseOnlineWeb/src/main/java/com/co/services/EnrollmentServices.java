@@ -4,8 +4,7 @@
  */
 package com.co.services;
 
-import com.co.dtos.CourseDTO;
-import com.co.pojo.Course;
+import com.co.dtos.EnrollmentDTO;
 import java.util.List;
 import java.util.Map;
 
@@ -13,10 +12,10 @@ import java.util.Map;
  *
  * @author ACER
  */
-public interface CourseServices {
-    public List<Course> getCourses(Map<String, String> params);
-    public CourseDTO getCourseById (int id);
-    public void addOrUpdate(CourseDTO c);
+public interface EnrollmentServices {
+    public List<EnrollmentDTO> getEnrollments(Map<String, String> params) ;
+    public EnrollmentDTO getEnrollmentById(int id);
+    public void addOrUpdate(EnrollmentDTO dto);
     public void delete(int id);
-    public long countCourses(Map<String, String> params);
+    public long countEnrollments(Map<String, String> params);
 }

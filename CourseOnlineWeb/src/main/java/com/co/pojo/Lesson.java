@@ -55,6 +55,13 @@ public class Lesson implements Serializable {
     @Column(name = "created_at")
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
+    
+    @Column(name = "video_url")
+    private String videoUrl;
+
+    
+    @Column(name = "lesson_order")
+    private Integer lessonOrder;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "lessonId")
     private Set<Qna> qnaSet;
     @JoinColumn(name = "chapter_id", referencedColumnName = "id")
@@ -162,6 +169,34 @@ public class Lesson implements Serializable {
     @Override
     public String toString() {
         return "com.co.pojo.Lesson[ id=" + id + " ]";
+    }
+
+    /**
+     * @return the videoUrl
+     */
+    public String getVideoUrl() {
+        return videoUrl;
+    }
+
+    /**
+     * @param videoUrl the videoUrl to set
+     */
+    public void setVideoUrl(String videoUrl) {
+        this.videoUrl = videoUrl;
+    }
+
+    /**
+     * @return the lessonOrder
+     */
+    public Integer getLessonOrder() {
+        return lessonOrder;
+    }
+
+    /**
+     * @param lessonOrder the lessonOrder to set
+     */
+    public void setLessonOrder(Integer lessonOrder) {
+        this.lessonOrder = lessonOrder;
     }
     
 }

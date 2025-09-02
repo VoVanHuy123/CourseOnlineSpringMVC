@@ -1,0 +1,110 @@
+
+
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+    <th:object th:replace="base :: bt"></th:object>
+</head>
+<body>
+    <div th:replace="base :: menu"></div>
+
+    <main class="container">
+        <h1 class="text-center text-info mt-2">QUẢN LÝ BÀI HỌC</h1>
+        <form method="post" th:object="${user}" th:action="@{/users}" enctype="multipart/form-data">
+            <!-- Họ -->
+            <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" id="firstName" th:field="*{firstName}" placeholder="Họ">
+                <label for="firstName">Họ</label>
+                <div class="text-danger" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></div>
+            </div>
+
+            <!-- Tên -->
+            <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" id="lastName" th:field="*{lastName}" placeholder="Tên">
+                <label for="lastName">Tên</label>
+                <div class="text-danger" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></div>
+            </div>
+
+            <!-- Email -->
+            <div class="form-floating mb-3 mt-3">
+                <input type="email" class="form-control" id="email" th:field="*{email}" placeholder="Email">
+                <label for="email">Email</label>
+                <div class="text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+            </div>
+
+            <!-- Username -->
+            <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" id="username" th:field="*{username}" placeholder="Tên đăng nhập">
+                <label for="username">Tên đăng nhập</label>
+                <div class="text-danger" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
+            </div>
+            
+            <!-- password -->
+            <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" id="password" th:field="*{password}" placeholder="Mật khẩu">
+                <label for="password">Mật khẩu</label>
+                <div class="text-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+            </div>
+
+            <!-- Số điện thoại -->
+            <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" id="phoneNumber" th:field="*{phoneNumber}" placeholder="Số điện thoại">
+                <label for="phoneNumber">Số điện thoại</label>
+                <div class="text-danger" th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}"></div>
+            </div>
+
+            <!-- Vai trò -->
+            <div class="form-floating mb-3 mt-3">
+                <select class="form-select" id="role" th:field="*{role}">
+                    <option value="USER">Người dùng</option>
+                    <option value="TEACHER">Giáo viên</option>
+                    <option value="ADMIN">Quản trị viên</option>
+                </select>
+                <label for="role">Vai trò</label>
+            </div>
+
+            <!-- Xác minh -->
+            <div class="form-check mb-3 mt-3">
+                <input class="form-check-input" type="checkbox" id="isVerify" th:field="*{isVerify}">
+                <label class="form-check-label" for="isVerify">Đã xác minh</label>
+            </div>
+
+            <!-- Ngày tạo -->
+            <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control"
+                       th:value="${#dates.format(user.createdAt, 'dd/MM/yyyy')}" readonly>
+                <label>Ngày tạo</label>
+            </div>
+
+            <!-- Upload avatar -->
+            <div class="form-floating mb-3 mt-3">
+                <input type="file" class="form-control" id="avatarFile" th:field="*{avatarFile}">
+                <label for="avatarFile">Ảnh đại diện</label>
+            </div>
+
+            <!-- Xem avatar hiện tại -->
+            <div class="form-floating mb-3 mt-3" th:if="${user.avatar != null}">
+                <label>Ảnh hiện tại:</label>
+                <img th:src="@{${user.avatar}}" alt="Avatar" width="120" class="d-block mt-2 rounded">
+            </div>
+
+            <!-- Hidden fields -->
+            <input type="hidden" th:field="*{id}" />
+            <input type="hidden" th:field="*{avatar}" />
+
+            <!-- Nút submit -->
+            <div class="form-floating mb-3 mt-3">
+                <button class="btn btn-success" th:if="${user.id == null}">Thêm người dùng</button>
+                <button class="btn btn-success" th:unless="${user.id == null}">Cập nhật người dùng</button>
+            </div>
+        </form>
+
+
+    </main>
+
+    <div th:replace="base :: footer"></div>
+
+    <script th:src="@{/js/main.js}"></script>
+</body>
+</html>
+

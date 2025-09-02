@@ -1,0 +1,60 @@
+
+
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+    <th:object th:replace="base :: bt"></th:object>
+</head>
+<body>
+    <div th:replace="base :: menu"></div>
+
+    <main class="container">
+        <h1 class="text-center text-info mt-2">QUẢN LÝ KHÓA HỌC</h1>
+        <form method="post" th:object="${chapter}" th:action="@{/chapters}" enctype="multipart/form-data">
+            <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" id="title" th:field="*{title}" placeholder="Tên chương">
+                <label for="title">Tên chương</label>
+            </div>
+
+            <div class="form-floating mb-3 mt-3">
+                <textarea class="form-control" id="description" th:field="*{description}" placeholder="Mô tả" style="height: 100px"></textarea>
+                <label for="description">Mô tả</label>
+            </div>
+
+            <div class="form-floating mb-3 mt-3">
+                <input type="number" class="form-control" id="orderIndex" th:field="*{orderIndex}" placeholder="Thứ tự chương">
+                <label for="orderIndex">Thứ tự</label>
+            </div>
+
+            <div class="form-floating mb-3 mt-3">
+<!--                <select class="form-select" id="courseId" th:field="*{courseId}">
+                    <option value="">-- Chọn khóa học --</option>
+                    <option th:each="c : ${courses}" th:value="${c.id}" th:text="${c.title}"></option>
+                </select>
+                <label for="courseId">Khóa học</label>-->
+                <input type="number" class="form-control" id="courseId" th:field="*{courseId}" placeholder="id khóa học">
+                <label for="courseId">ID khóa học</label>
+            </div>
+
+            <div class="form-floating mb-3 mt-3">
+                <label>Ngày tạo:</label>
+                <input type="text"
+                       class="form-control"
+                       th:value="${#dates.format(chapter.createdAt, 'dd/MM/yyyy')}"
+                       readonly />
+            </div>
+
+            <div class="form-floating mb-3 mt-3">
+                <input type="hidden" th:field="*{id}" />
+                <button class="btn btn-success" th:if="${chapter.id == null}">Thêm chương</button>
+                <button class="btn btn-success" th:unless="${chapter.id == null}">Cập nhật chương</button>
+            </div>
+        </form>
+
+    </main>
+
+    <div th:replace="base :: footer"></div>
+
+    <script th:src="@{/js/main.js}"></script>
+</body>
+</html>
