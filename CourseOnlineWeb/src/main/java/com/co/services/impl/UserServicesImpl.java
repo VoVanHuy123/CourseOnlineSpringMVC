@@ -4,11 +4,20 @@
  */
 package com.co.services.impl;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
+import com.co.dtos.UserDTO;
 import com.co.pojo.User;
 import com.co.repositories.UserRepository;
 import com.co.services.UserServices;
+import java.io.IOException;
+import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -23,6 +32,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserServicesImpl implements UserServices {
 
+    @Autowired
+    private Cloudinary cloudinary;
     @Autowired
     private UserRepository userRepo;
 
@@ -42,6 +53,78 @@ public class UserServicesImpl implements UserServices {
 
         return new org.springframework.security.core.userdetails.User(
                 u.getUsername(), u.getPassword(), authorities);
+    }
+
+    @Override
+    public List<UserDTO> getUsers(Map<String, String> params) {
+        List<User> users = this.userRepo.getUsers(params);
+        return users.stream()
+                .map(UserDTO::new) // gọi constructor để convert
+                .toList();
+    }
+
+    @Override
+    public UserDTO getUserById(int id) {
+        User user = this.userRepo.getUserById(id);
+        return new UserDTO(user);
+    }
+
+    @Override
+    public void addOrUpdate(UserDTO user) {
+        User u;
+
+        if (user.getId() == null) {
+            u = new User();
+            u.setCreatedAt(new Date());
+        } else {
+            u = userRepo.getUserById(user.getId());
+            if (u == null) {
+                throw new IllegalArgumentException("user không tồn tại!");
+            }
+        }
+        
+        if (user.getAvatarFile()!= null && !user.getAvatarFile().isEmpty()) {
+            try {
+                Map res = this.cloudinary.uploader().upload(user.getAvatarFile().getBytes(), ObjectUtils.asMap("resource_type", "auto"));
+                u.setAvatar((String) res.get("secure_url"));
+            } catch (IOException ex) {
+                Logger.getLogger(UserServicesImpl.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        }
+        
+        u.setEmail(user.getEmail());
+        u.setPhoneNumber(user.getPhoneNumber());
+        u.setUsername(user.getUsername());
+        u.setRole(user.getRole());
+        u.setIsVerify(user.getIsVerify());
+        u.setFirstName(user.getFirstName());
+        u.setLastName(user.getLastName());
+        u.setPassword(user.getPassword());
+        this.userRepo.addOrUpdate(u);
+        
+    }
+
+    @Override
+    public void delete(int id) {
+        this.userRepo.delete(id);
+    }
+//    private UserDTO convertToDTO(User user) {
+//        UserDTO dto = new UserDTO();
+//        dto.setId(lesson.getId());
+//        dto.setTitle(lesson.getTitle());
+//        dto.setContent(lesson.getContent());
+//        dto.setChapterId(lesson.getChapterId().getId());
+//        dto.setChapterTitle(lesson.getChapterId().getTitle());
+//        dto.setLessonOrder(lesson.getLessonOrder());
+//        dto.setCreatedAt(lesson.getCreatedAt());
+//        dto.setVideoUrl(lesson.getVideoUrl());
+//        return dto;
+//    }
+
+    @Override
+    public long countUsers(Map<String, String> params) {
+        return this.userRepo.countUsers(params);
     }
 }
 

@@ -1,0 +1,74 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:object th:replace="base :: bt"></th:object>
+</head>
+<body>
+<div th:replace="base :: menu"></div>
+
+<main class="container">
+    <h1 class="text-center text-info mt-2">QUẢN LÝ ENROLLMENT</h1>
+    <form method="post" th:object="${enrollment}" th:action="@{/enrollments}" enctype="multipart/form-data">
+
+        <!-- ID (ẩn) -->
+        <input type="hidden" th:field="*{id}" />
+
+        <!-- Ngày ghi danh -->
+        <div class="form-floating mb-3 mt-3">
+            <input type="text" class="form-control"
+                   th:value="${#dates.format(enrollment.enrolledAt, 'dd/MM/yyyy HH:mm')}" readonly>
+            <label>Ngày ghi danh</label>
+        </div>
+
+        <!-- Chọn khóa học -->
+        <div class="form-floating mb-3 mt-3">
+            <!-- Nếu muốn chọn từ danh sách -->
+            <!--
+            <select class="form-select" id="courseId" th:field="*{courseId}">
+                <option th:each="c : ${courses}" th:value="${c.id}" th:text="${c.title}"></option>
+            </select>
+            -->
+            <input type="number" class="form-control" id="courseId" th:field="*{courseId}" placeholder="ID khóa học">
+            <label for="courseId">ID khóa học</label>
+            <div class="text-danger" th:if="${#fields.hasErrors('courseId')}" th:errors="*{courseId}"></div>
+        </div>
+
+        <!-- Tên khóa học (readonly vì lấy từ courseId) -->
+        <div class="form-floating mb-3 mt-3">
+            <input type="text" class="form-control" id="courseTitle" th:value="${enrollment.courseTitle}" readonly>
+            <label for="courseTitle">Tên khóa học</label>
+        </div>
+
+        <!-- Chọn user -->
+        <div class="form-floating mb-3 mt-3">
+            <!--
+            <select class="form-select" id="userId" th:field="*{userId}">
+                <option th:each="u : ${users}" th:value="${u.id}" th:text="${u.fullName}"></option>
+            </select>
+            -->
+            <input type="number" class="form-control" id="userId" th:field="*{userId}" placeholder="ID người dùng">
+            <label for="userId">ID người dùng</label>
+            <div class="text-danger" th:if="${#fields.hasErrors('userId')}" th:errors="*{userId}"></div>
+        </div>
+
+        <!-- Tên người dùng (readonly) -->
+        <div class="form-floating mb-3 mt-3">
+            <input type="text" class="form-control" id="userFullName" th:value="${enrollment.userFullName}" readonly>
+            <label for="userFullName">Tên người dùng</label>
+        </div>
+
+        <!-- Nút submit -->
+        <div class="form-floating mb-3 mt-3">
+            <button class="btn btn-success" th:if="${enrollment.id == null}">Thêm Enrollment</button>
+            <button class="btn btn-success" th:unless="${enrollment.id == null}">Cập nhật Enrollment</button>
+        </div>
+    </form>
+
+</main>
+
+<div th:replace="base :: footer"></div>
+
+<script th:src="@{/js/main.js}"></script>
+</body>
+</html>
+

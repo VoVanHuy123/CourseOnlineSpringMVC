@@ -29,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class CourseRepositoryImpl implements CourseRepository{
     
+    private static final int PAGE_SIZE = 8;
     @Autowired
     private LocalSessionFactoryBean factory;
 
@@ -74,6 +75,19 @@ public class CourseRepositoryImpl implements CourseRepository{
         }
         
         Query q = s.createQuery(query);
+        // phân trang LIMIT OFFSET
+        if (params != null) {
+            String p = params.get("page");
+            if (p != null && !p.isEmpty()) {
+                int page = Integer.parseInt(p);
+
+                int start = (page - 1) * PAGE_SIZE;
+
+                q.setMaxResults(PAGE_SIZE);
+                q.setFirstResult(start);
+            }
+        }
+        
         return q.getResultList();
     }
 
@@ -92,6 +106,49 @@ public class CourseRepositoryImpl implements CourseRepository{
         } else {
             s.persist(c);
         }
+    }
+
+    @Override
+    public void delete(int id) {
+        Session s = this.factory.getObject().getCurrentSession();
+        Course c = this.getCourseById(id);
+        if (c != null){
+            s.remove(c);
+        }
+        
+    }
+    
+    @Override
+    public long countCourses(Map<String, String> params) {
+        Session s = this.factory.getObject().getCurrentSession();
+        CriteriaBuilder b = s.getCriteriaBuilder();
+        CriteriaQuery<Long> cq = b.createQuery(Long.class);
+        Root<Course> root = cq.from(Course.class);
+        cq.select(b.count(root));
+
+        List<Predicate> predicates = new ArrayList<>();
+        String kw = params.get("kw");
+            if (kw != null && !kw.isEmpty()) {
+                predicates.add(b.like(root.get("title"), String.format("%%%s%%", kw)));
+            }
+            String fromPrice = params.get("fromPrice");
+            if (fromPrice != null && !fromPrice.isEmpty()) {
+                predicates.add(b.greaterThanOrEqualTo(root.get("tuitionFee"), new BigDecimal(fromPrice)));
+            }
+
+            String toPrice = params.get("toPrice");
+            if (toPrice != null && !toPrice.isEmpty()) {
+                predicates.add(b.lessThanOrEqualTo(root.get("tuitionFee"), new BigDecimal(toPrice)));
+            }
+            
+            String teacherId = params.get("teacherId");
+            if (teacherId != null && !teacherId.isEmpty()){
+                predicates.add(b.equal(root.get("teacherId").get("id"), Integer.valueOf(teacherId)));
+            }
+            
+        cq.where(predicates.toArray(new Predicate[0]));
+
+        return s.createQuery(cq).getSingleResult();
     }
 
     

@@ -5,8 +5,7 @@
 package com.co.controllers;
 
 import com.co.dtos.LessonDTO;
-import com.co.dtos.UserDTO;
-import com.co.services.UserServices;
+import com.co.services.LessonServices;
 import jakarta.validation.Valid;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,21 +20,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  *
- * @author admin
+ * @author ACER
  */
 @Controller
-public class UserController {
-    @Autowired
-    private UserServices userServices;
+public class LessonController {
     
-    @GetMapping("/login")
-    public String loginView() {
-        return "login";
-    }
-    @GetMapping("/users")
+    @Autowired
+    private LessonServices lessonServices;
+    @GetMapping("/lessons")
     public String list(Model model, @RequestParam Map<String, String> params) {
-        model.addAttribute("users", this.userServices.getUsers(params));
-        long totalItems = this.userServices.countUsers(params);
+        model.addAttribute("lessons", this.lessonServices.getLessons(params));
+        long totalItems = this.lessonServices.countLessons(params);
         int pageSize = 8;
         int totalPages = (int) Math.ceil((double) totalItems / pageSize);
 
@@ -43,36 +38,36 @@ public class UserController {
                 ? Integer.parseInt(params.get("page")) : 1;
         model.addAttribute("totalPages", totalPages);
         model.addAttribute("currentPage", currentPage);
-        return "users";
+        return "lessons";
     }
-    @GetMapping("/users/create")
+    @GetMapping("/lessons/create")
     public String list(Model model) {
-        model.addAttribute("user", new UserDTO());
-        return "user-details";
+        model.addAttribute("lesson", new LessonDTO());
+        return "lesson-details";
     }
-    @GetMapping("/users/{usersId}")
-    public String update(Model model, @PathVariable(value = "usersId") int id) {
-        model.addAttribute("user", this.userServices.getUserById(id));
-        return "user-details";
+    @GetMapping("/lessons/{lessonId}")
+    public String update(Model model, @PathVariable(value = "lessonId") int id) {
+        model.addAttribute("lesson", this.lessonServices.getLessonById(id));
+        return "lesson-details";
     }
-    @PostMapping("/users")
+    @PostMapping("/lessons")
     public String create(
-            @ModelAttribute("user") @Valid UserDTO userDTO,
+            @ModelAttribute("lesson") @Valid LessonDTO chapterDTO,
             BindingResult result,
             Model model) {
 
         if (result.hasErrors()) {
-            return "user-details";
+            return "lesson-details";
         }
 
-        this.userServices.addOrUpdate(userDTO);
+        this.lessonServices.addOrUpdate(chapterDTO);
 
-        return "redirect:/users";
+        return "redirect:/lessons";
     }
     
-    @PostMapping("/users/delete/{userId}")
-    public String delete(@PathVariable("userId") int id) {
-        this.userServices.delete(id);
-        return "redirect:/users";
+    @PostMapping("/lessons/delete/{lessonId}")
+    public String delete(@PathVariable("lessonId") int id) {
+        this.lessonServices.delete(id);
+        return "redirect:/lessons";
     }
 }

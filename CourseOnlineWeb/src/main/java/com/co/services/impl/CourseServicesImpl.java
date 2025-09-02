@@ -60,7 +60,6 @@ public class CourseServicesImpl implements CourseServices {
     @Override
     public void addOrUpdate(CourseDTO dto) {
         Course c;
-        System.out.println("DTO  = " + dto);
 
         if (dto.getId() == null) {
             c = new Course();
@@ -106,6 +105,16 @@ public class CourseServicesImpl implements CourseServices {
         c.setLessonsCount(dto.getLessonsCount());
         c.setPublic1(dto.getPublic1());
         this.courseRepo.addOrUpdate(c);
+    }
+
+    @Override
+    public void delete(int id) {
+        this.courseRepo.delete(id);
+    }
+
+    @Override
+    public long countCourses(Map<String, String> params) {
+        return this.courseRepo.countCourses(params);
     }
 
 }

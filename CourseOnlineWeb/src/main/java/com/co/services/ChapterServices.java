@@ -4,8 +4,8 @@
  */
 package com.co.services;
 
-import com.co.dtos.CourseDTO;
-import com.co.pojo.Course;
+import com.co.dtos.ChapterDTO;
+import com.co.pojo.Chapter;
 import java.util.List;
 import java.util.Map;
 
@@ -13,10 +13,10 @@ import java.util.Map;
  *
  * @author ACER
  */
-public interface CourseServices {
-    public List<Course> getCourses(Map<String, String> params);
-    public CourseDTO getCourseById (int id);
-    public void addOrUpdate(CourseDTO c);
+public interface ChapterServices {
+    public List<ChapterDTO> getChapters(Map<String,String> params);
+    public ChapterDTO getChapterById(int id);
+    public void addOrUpdate(ChapterDTO chapterDto);
     public void delete(int id);
-    public long countCourses(Map<String, String> params);
+    public long countChapters(Map<String, String> params);
 }

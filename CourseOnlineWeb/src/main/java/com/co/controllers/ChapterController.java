@@ -4,10 +4,11 @@
  */
 package com.co.controllers;
 
-import com.co.dtos.LessonDTO;
-import com.co.dtos.UserDTO;
-import com.co.services.UserServices;
+import com.co.dtos.ChapterDTO;
+import com.co.dtos.CourseDTO;
+import com.co.services.ChapterServices;
 import jakarta.validation.Valid;
+import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,21 +22,18 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  *
- * @author admin
+ * @author ACER
  */
 @Controller
-public class UserController {
+public class ChapterController {
+
     @Autowired
-    private UserServices userServices;
-    
-    @GetMapping("/login")
-    public String loginView() {
-        return "login";
-    }
-    @GetMapping("/users")
+    private ChapterServices chapterServices;
+
+    @GetMapping("/chapters")
     public String list(Model model, @RequestParam Map<String, String> params) {
-        model.addAttribute("users", this.userServices.getUsers(params));
-        long totalItems = this.userServices.countUsers(params);
+        model.addAttribute("chapters", this.chapterServices.getChapters(params));
+        long totalItems = this.chapterServices.countChapters(params);
         int pageSize = 8;
         int totalPages = (int) Math.ceil((double) totalItems / pageSize);
 
@@ -43,36 +41,41 @@ public class UserController {
                 ? Integer.parseInt(params.get("page")) : 1;
         model.addAttribute("totalPages", totalPages);
         model.addAttribute("currentPage", currentPage);
-        return "users";
+        return "chapters";
     }
-    @GetMapping("/users/create")
+
+    @GetMapping("/chapters/create")
     public String list(Model model) {
-        model.addAttribute("user", new UserDTO());
-        return "user-details";
+        model.addAttribute("chapter", new ChapterDTO());
+        return "chapter-details";
     }
-    @GetMapping("/users/{usersId}")
-    public String update(Model model, @PathVariable(value = "usersId") int id) {
-        model.addAttribute("user", this.userServices.getUserById(id));
-        return "user-details";
+
+    @GetMapping("/chapters/{chapterId}")
+    public String update(Model model, @PathVariable(value = "chapterId") int id) {
+        model.addAttribute("chapter", this.chapterServices.getChapterById(id));
+        return "chapter-details";
     }
-    @PostMapping("/users")
+
+    @PostMapping("/chapters")
     public String create(
-            @ModelAttribute("user") @Valid UserDTO userDTO,
+            @ModelAttribute("chapter") @Valid ChapterDTO chapterDTO,
             BindingResult result,
             Model model) {
 
         if (result.hasErrors()) {
-            return "user-details";
+            return "chapter-details";
         }
 
-        this.userServices.addOrUpdate(userDTO);
+        chapterServices.addOrUpdate(chapterDTO);
 
-        return "redirect:/users";
+        return "redirect:/chapters";
+    }
+
+    @PostMapping("/chapters/delete/{chapterId}")
+    public String delete(@PathVariable("chapterId") int id) {
+        this.chapterServices.delete(id);
+        return "redirect:/chapters";
     }
     
-    @PostMapping("/users/delete/{userId}")
-    public String delete(@PathVariable("userId") int id) {
-        this.userServices.delete(id);
-        return "redirect:/users";
-    }
+//    public countChapter(List)
 }

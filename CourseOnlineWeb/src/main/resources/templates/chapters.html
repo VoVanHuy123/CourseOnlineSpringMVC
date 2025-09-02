@@ -8,16 +8,13 @@
     <div th:replace="base :: menu"></div>
 
     <main class="container">
-        <form th:action="@{/courses}">
-            <div class="mb-3 mt-3">
-                <input type="text" class="form-control" placeholder="Tìm theo tên" name="kw">
-            </div>
+        <form th:action="@{/chapters}">
             <div class="row mb-3 mt-3">
                 <div  class="col-6">
-                    <input type="number" class="form-control" placeholder="Từ giá" name="fromPrice">
+                    <input type="text" class="form-control" placeholder="Tìm theo tên chương" name="kw">
                 </div>
                 <div  class="col-6">
-                    <input type="number" class="form-control" placeholder="Đến giá" name="toPrice">
+                    <input type="number" class="form-control" placeholder="khóa học id" name="courseId">
                 </div>
             </div>
             <div class="mb-3 mt-3">
@@ -25,45 +22,43 @@
             </div>
         </form><!--
         -->            <div class="mt-2 mb-2">
-            <a th:href="@{/courses/create}" class="btn btn-info">Thêm sản phẩm</a>
+            <a th:href="@{/chapters/create}" class="btn btn-info">Thêm Chương</a>
         </div><!--
         -->            <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>STT</th>
-                    <th></th>
+                    <th>STT</th>   <!-- thêm cột số thứ tự -->
                     <th>ID</th>
-                    <th>Tên khóa học</th>
-                    <th>Giá thành</th>
+                    <th>Tên chương</th>
+                    <th>Mô tả</th>
+                    <th>Thứ tự</th>
                     <th>Ngày tạo</th>
+                    <th>Khóa học</th>
                     <th></th>
                 </tr>
             </thead>
             <tbody>
-                <tr th:each="c, stat : ${courses}">
-                    <td th:text="${stat.count}"></td>
-                    <td>
-                        <img th:src="${c.imageUrl}" width="200" class="rounded" />
-                    </td>
-                    <td th:text="${c.id}"></td>
-                    <td th:text="${c.title}"></td>
-                    <td th:text="${c.tuitionFee} + ' VNĐ'"></td>
-                    <td th:text="${#dates.format(c.createdAt, 'dd/MM/yyyy')}"></td>
+                <tr th:each="ch, stat : ${chapters}">
+                    <td th:text="${stat.count}"></td> <!-- số thứ tự -->
+                    <td th:text="${ch.id}"></td>
+                    <td th:text="${ch.title}"></td>
+                    <td th:text="${ch.description}"></td>
+                    <td th:text="${ch.orderIndex}"></td>
+                    <td th:text="${#dates.format(ch.createdAt, 'dd/MM/yyyy')}"></td>
+                    <td th:text="${ch.courseId}"></td>
                     <td>
                         <div class="d-flex gap-2">
-                            <a th:href="@{/courses} + '/' + ${c.id}" class="btn btn-success">Cập nhật</a>
-                            <form th:action="@{/courses/delete/{id}(id=${c.id})}" method="post"
-                                  onsubmit="return confirm('Bạn chắc chắn muốn xóa?');">
+                            <a th:href="@{/chapters/{id}(id=${ch.id})}" class="btn btn-success">Cập nhật</a>
+                            <form th:action="@{/chapters/delete/{id}(id=${ch.id})}" method="post"
+                                  onsubmit="return confirm('Bạn chắc chắn muốn xóa chương này?');">
                                 <button type="submit" class="btn btn-danger">Xóa</button>
                             </form>
                         </div>
-
-                        <!--<button class="btn btn-danger" th:onclick="'deleteCourse(\'' + @{/courses/} + ${c.id} + '\')'">Xóa</button>-->
-                        <!--<button class="btn btn-danger" >Xóa</button>-->
                     </td>
                 </tr>
             </tbody>
         </table>
+
         <div class="text-center">
             <nav aria-label="Page navigation">
                 <ul class="pagination">
@@ -84,6 +79,7 @@
                 </ul>
             </nav>
         </div>
+
     </main>
 
     <div th:replace="base :: footer"></div>

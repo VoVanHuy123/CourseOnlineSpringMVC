@@ -4,7 +4,10 @@
  */
 package com.co.repositories;
 
+import com.co.dtos.UserDTO;
 import com.co.pojo.User;
+import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -12,4 +15,9 @@ import com.co.pojo.User;
  */
 public interface UserRepository {
     public User getUserByUsername (String username);
+    public List<User> getUsers (Map<String, String> params);
+    public User getUserById (int id);
+    public void addOrUpdate(User user);
+    public void delete(int id);
+    public long countUsers(Map<String, String> params);
 }

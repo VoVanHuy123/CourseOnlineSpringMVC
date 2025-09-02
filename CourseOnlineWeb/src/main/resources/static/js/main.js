@@ -1,5 +1,5 @@
 
-function deleteProduct(endpoint) {
+function deleteCourse(endpoint) {
     if (confirm("Bạn chắc chắn xóa?") === true) {
         fetch(endpoint, {
             method: "delete"

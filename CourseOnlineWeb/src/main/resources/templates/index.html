@@ -7,8 +7,14 @@
         <div th:replace="base :: menu"></div>
 
         <main class="container">
+            <div class="mt-4 mb-4">
+                <a class="nav-link" th:href="@{/courses}">Khóa Học</a>
+                <a class="nav-link" th:href="@{/chapters}">Chương</a>
+                <a class="nav-link" th:href="@{/lessons}">Bài học</a>
+                <a class="nav-link" th:href="@{/users}">Người dùng</a>
+                <a class="nav-link" th:href="@{/enrollments}">Đăng kí khóa học</a>
+            </div>
             
-            <a th:href="@{/courses}">Khóa Học</a>
 
         </main>
 
