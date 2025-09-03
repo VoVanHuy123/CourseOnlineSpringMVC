@@ -54,6 +54,9 @@ public class User implements Serializable {
     @Column(name = "last_name")
     private String lastName;
     @Basic(optional = false)
+    @Column(name = "avatar")
+    private String avatar;
+    @Basic(optional = false)
     @Column(name = "email")
     private String email;
     @Basic(optional = false)
@@ -71,20 +74,22 @@ public class User implements Serializable {
     @Column(name = "created_at")
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "userId")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "userId",orphanRemoval = true)
     private Set<Qna> qnaSet;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "userId")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "userId",orphanRemoval = true)
     private Set<Review> reviewSet;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "userId")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "userId",orphanRemoval = true)
     private Set<LessonProgress> lessonProgressSet;
-    @OneToMany(mappedBy = "teacherId")
+    @OneToMany(mappedBy = "teacherId",orphanRemoval = true)
     private Set<Course> courseSet;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "userId")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "userId",orphanRemoval = true)
     private Set<Enrollment> enrollmentSet;
 
     public User() {
     }
-
+    public String getFullName() {
+        return this.getFirstName() + " " + this.getLastName();
+    }
     public User(Integer id) {
         this.id = id;
     }
@@ -241,6 +246,20 @@ public class User implements Serializable {
     @Override
     public String toString() {
         return "com.co.pojo.User[ id=" + id + " ]";
+    }
+
+    /**
+     * @return the avatar
+     */
+    public String getAvatar() {
+        return avatar;
+    }
+
+    /**
+     * @param avatar the avatar to set
+     */
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
     
 }

@@ -1,0 +1,89 @@
+
+
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+    <th:object th:replace="base :: bt"></th:object>
+</head>
+<body>
+    <div th:replace="base :: menu"></div>
+
+    <main class="container">
+        <h1 class="text-center text-info mt-2">QUẢN LÝ BÀI HỌC</h1>
+        <form method="post" th:object="${lesson}" th:action="@{/lessons}" enctype="multipart/form-data">
+            <!-- Tiêu đề bài học -->
+            <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" id="title" th:field="*{title}" placeholder="Tên bài học">
+                <label for="title">Tên bài học</label>
+                <div class="text-danger" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></div>
+            </div>
+
+            <!-- Nội dung bài học -->
+            <div class="form-floating mb-3 mt-3">
+                <textarea class="form-control" id="content" th:field="*{content}" placeholder="Nội dung bài học"></textarea>
+                <label for="content">Nội dung</label>
+            </div>
+
+            <!-- Thứ tự bài học -->
+            <div class="form-floating mb-3 mt-3">
+                <input type="number" class="form-control" id="lessonOrder" th:field="*{lessonOrder}" placeholder="Thứ tự bài học">
+                <label for="lessonOrder">Thứ tự</label>
+                <div class="text-danger" th:if="${#fields.hasErrors('lessonOrder')}" th:errors="*{lessonOrder}"></div>
+            </div>
+
+            <!-- Thuộc chương nào -->
+            <div class="form-floating mb-3 mt-3">
+<!--                <select class="form-select" id="chapterId" th:field="*{chapterId}">
+                    <option th:each="ch : ${chapters}" th:value="${ch.id}" th:text="${ch.title}"></option>
+                </select>-->
+                <input class="form-control" type="number" id="chapterId" th:field="*{chapterId}">
+                <label for="chapterId">Chọn chương</label>
+                <div class="text-danger" th:if="${#fields.hasErrors('chapterId')}" th:errors="*{chapterId}"></div>
+            </div>
+
+            <!-- Công khai hay không -->
+            <div class="form-check mb-3 mt-3">
+                <input class="form-check-input" type="checkbox" id="isPublic" th:field="*{isPublic}">
+                <label class="form-check-label" for="isPublic">Công khai</label>
+            </div>
+
+            <!-- Ngày tạo -->
+            <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" 
+                       th:value="${#dates.format(lesson.createdAt, 'dd/MM/yyyy')}" readonly>
+                <label>Ngày tạo</label>
+            </div>
+
+            <!-- Upload video -->
+            <div class="form-floating mb-3 mt-3">
+                <input type="file" class="form-control" id="videoFile" th:field="*{videoFile}">
+                <label for="videoFile">Video bài học</label>
+            </div>
+
+            <!-- Xem video đã có -->
+            <div class="form-floating mb-3 mt-3" th:if="${lesson.videoUrl != null}">
+                <label>Video hiện tại:</label>
+                <video width="400" controls>
+                    <source th:src="${lesson.videoUrl}" type="video/mp4" />
+                    Trình duyệt không hỗ trợ video.
+                </video>
+            </div>
+
+            <!-- Hidden fields -->
+            <input type="hidden" th:field="*{id}" />
+            <input type="hidden" th:field="*{videoUrl}" />
+
+            <!-- Nút submit -->
+            <div class="form-floating mb-3 mt-3">
+                <button class="btn btn-success" th:if="${lesson.id == null}">Thêm bài học</button>
+                <button class="btn btn-success" th:unless="${lesson.id == null}">Cập nhật bài học</button>
+            </div>
+        </form>
+
+    </main>
+
+    <div th:replace="base :: footer"></div>
+
+    <script th:src="@{/js/main.js}"></script>
+</body>
+</html>

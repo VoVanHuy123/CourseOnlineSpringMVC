@@ -4,7 +4,10 @@
  */
 package com.co.services;
 
+import com.co.dtos.UserDTO;
 import com.co.pojo.User;
+import java.util.List;
+import java.util.Map;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 /**
@@ -13,4 +16,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
  */
 public interface UserServices extends UserDetailsService{
     User getUserByUsername(String username);
+    public List<UserDTO> getUsers (Map<String, String> params);
+    public UserDTO getUserById (int id);
+    public void addOrUpdate(UserDTO user);
+    public void delete(int id);
+    public long countUsers(Map<String, String> params);
 }

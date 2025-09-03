@@ -62,7 +62,7 @@ public class Chapter implements Serializable {
     @JoinColumn(name = "course_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Course courseId;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "chapterId")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "chapterId",orphanRemoval = true)
     private Set<Lesson> lessonSet;
 
     public Chapter() {
