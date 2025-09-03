@@ -27,7 +27,7 @@ public class EnrollmentController {
     @Autowired
     private EnrollmentServices enrollmentServices;
 
-    @GetMapping("/enrollments")
+    @GetMapping("/admin/enrollments")
     public String list(Model model, @RequestParam Map<String, String> params) {
         model.addAttribute("enrollments", this.enrollmentServices.getEnrollments(params));
         long totalItems = this.enrollmentServices.countEnrollments(params);
@@ -41,19 +41,19 @@ public class EnrollmentController {
         return "enrollments";
     }
 
-    @GetMapping("/enrollments/create")
+    @GetMapping("/admin/enrollments/create")
     public String createForm(Model model) {
         model.addAttribute("enrollment", new EnrollmentDTO());
         return "enrollment-details";
     }
 
-    @GetMapping("/enrollments/{enrollmentId}")
+    @GetMapping("/admin/enrollments/{enrollmentId}")
     public String updateForm(Model model, @PathVariable(value = "enrollmentId") int id) {
         model.addAttribute("enrollment", this.enrollmentServices.getEnrollmentById(id));
         return "enrollment-details";
     }
 
-    @PostMapping("/enrollments")
+    @PostMapping("/admin/enrollments")
     public String createOrUpdate(
             @ModelAttribute("enrollment") @Valid EnrollmentDTO enrollmentDTO,
             BindingResult result,
@@ -64,12 +64,12 @@ public class EnrollmentController {
         }
 
         this.enrollmentServices.addOrUpdate(enrollmentDTO);
-        return "redirect:/enrollments";
+        return "redirect:/admin/enrollments";
     }
 
-    @PostMapping("/enrollments/delete/{enrollmentId}")
+    @PostMapping("/admin/enrollments/delete/{enrollmentId}")
     public String delete(@PathVariable("enrollmentId") int id) {
         this.enrollmentServices.delete(id);
-        return "redirect:/enrollments";
+        return "redirect:/admin/enrollments";
     }
 }

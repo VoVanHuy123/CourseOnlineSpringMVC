@@ -30,7 +30,7 @@ public class ChapterController {
     @Autowired
     private ChapterServices chapterServices;
 
-    @GetMapping("/chapters")
+    @GetMapping("/admin/chapters")
     public String list(Model model, @RequestParam Map<String, String> params) {
         model.addAttribute("chapters", this.chapterServices.getChapters(params));
         long totalItems = this.chapterServices.countChapters(params);
@@ -44,19 +44,19 @@ public class ChapterController {
         return "chapters";
     }
 
-    @GetMapping("/chapters/create")
+    @GetMapping("/admin/chapters/create")
     public String list(Model model) {
         model.addAttribute("chapter", new ChapterDTO());
         return "chapter-details";
     }
 
-    @GetMapping("/chapters/{chapterId}")
+    @GetMapping("/admin/chapters/{chapterId}")
     public String update(Model model, @PathVariable(value = "chapterId") int id) {
         model.addAttribute("chapter", this.chapterServices.getChapterById(id));
         return "chapter-details";
     }
 
-    @PostMapping("/chapters")
+    @PostMapping("/admin/chapters")
     public String create(
             @ModelAttribute("chapter") @Valid ChapterDTO chapterDTO,
             BindingResult result,
@@ -68,13 +68,13 @@ public class ChapterController {
 
         chapterServices.addOrUpdate(chapterDTO);
 
-        return "redirect:/chapters";
+        return "redirect:/admin/chapters";
     }
 
-    @PostMapping("/chapters/delete/{chapterId}")
+    @PostMapping("/admin/chapters/delete/{chapterId}")
     public String delete(@PathVariable("chapterId") int id) {
         this.chapterServices.delete(id);
-        return "redirect:/chapters";
+        return "redirect:/admin/chapters";
     }
     
 //    public countChapter(List)

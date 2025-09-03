@@ -27,7 +27,7 @@ public class LessonController {
     
     @Autowired
     private LessonServices lessonServices;
-    @GetMapping("/lessons")
+    @GetMapping("/admin/lessons")
     public String list(Model model, @RequestParam Map<String, String> params) {
         model.addAttribute("lessons", this.lessonServices.getLessons(params));
         long totalItems = this.lessonServices.countLessons(params);
@@ -40,17 +40,17 @@ public class LessonController {
         model.addAttribute("currentPage", currentPage);
         return "lessons";
     }
-    @GetMapping("/lessons/create")
+    @GetMapping("/admin/lessons/create")
     public String list(Model model) {
         model.addAttribute("lesson", new LessonDTO());
         return "lesson-details";
     }
-    @GetMapping("/lessons/{lessonId}")
+    @GetMapping("/admin/lessons/{lessonId}")
     public String update(Model model, @PathVariable(value = "lessonId") int id) {
         model.addAttribute("lesson", this.lessonServices.getLessonById(id));
         return "lesson-details";
     }
-    @PostMapping("/lessons")
+    @PostMapping("/admin/lessons")
     public String create(
             @ModelAttribute("lesson") @Valid LessonDTO chapterDTO,
             BindingResult result,
@@ -62,12 +62,12 @@ public class LessonController {
 
         this.lessonServices.addOrUpdate(chapterDTO);
 
-        return "redirect:/lessons";
+        return "redirect:/admin/lessons";
     }
     
-    @PostMapping("/lessons/delete/{lessonId}")
+    @PostMapping("/admin/lessons/delete/{lessonId}")
     public String delete(@PathVariable("lessonId") int id) {
         this.lessonServices.delete(id);
-        return "redirect:/lessons";
+        return "redirect:/admin/lessons";
     }
 }

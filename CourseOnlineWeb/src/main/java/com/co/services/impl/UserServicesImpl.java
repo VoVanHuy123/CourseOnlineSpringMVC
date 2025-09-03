@@ -126,6 +126,11 @@ public class UserServicesImpl implements UserServices {
     public long countUsers(Map<String, String> params) {
         return this.userRepo.countUsers(params);
     }
+
+    @Override
+    public boolean authenticate(String username, String password) {
+        return this.userRepo.authenticate(username, password);
+    }
 }
 
 

@@ -32,7 +32,7 @@ public class UserController {
     public String loginView() {
         return "login";
     }
-    @GetMapping("/users")
+    @GetMapping("/admin/users")
     public String list(Model model, @RequestParam Map<String, String> params) {
         model.addAttribute("users", this.userServices.getUsers(params));
         long totalItems = this.userServices.countUsers(params);
@@ -45,17 +45,17 @@ public class UserController {
         model.addAttribute("currentPage", currentPage);
         return "users";
     }
-    @GetMapping("/users/create")
+    @GetMapping("/admin/users/create")
     public String list(Model model) {
         model.addAttribute("user", new UserDTO());
         return "user-details";
     }
-    @GetMapping("/users/{usersId}")
+    @GetMapping("/admin/users/{usersId}")
     public String update(Model model, @PathVariable(value = "usersId") int id) {
         model.addAttribute("user", this.userServices.getUserById(id));
         return "user-details";
     }
-    @PostMapping("/users")
+    @PostMapping("/admin/users")
     public String create(
             @ModelAttribute("user") @Valid UserDTO userDTO,
             BindingResult result,
@@ -67,10 +67,10 @@ public class UserController {
 
         this.userServices.addOrUpdate(userDTO);
 
-        return "redirect:/users";
+        return "redirect:/admin/users";
     }
     
-    @PostMapping("/users/delete/{userId}")
+    @PostMapping("/admin/users/delete/{userId}")
     public String delete(@PathVariable("userId") int id) {
         this.userServices.delete(id);
         return "redirect:/users";
