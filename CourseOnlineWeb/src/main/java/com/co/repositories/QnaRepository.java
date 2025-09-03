@@ -17,4 +17,5 @@ public interface QnaRepository {
     public Qna getQnaById(int id);
     public void addOrUpdate(Qna q);
     public void delete(int id); 
+    public long countQnas(Map<String, String> params);
 }

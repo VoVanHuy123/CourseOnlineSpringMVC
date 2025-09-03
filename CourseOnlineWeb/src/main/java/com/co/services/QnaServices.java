@@ -18,4 +18,5 @@ public interface QnaServices {
     public QnaDTO getQnaById(int id);
     public void addOrUpdate(QnaDTO dto);
     public void delete(int id); 
+    public long countQnas(Map<String, String> params);
 }

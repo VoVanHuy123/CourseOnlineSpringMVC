@@ -49,8 +49,19 @@ public class QnaRepositoryImpl implements QnaRepository {
 
             q.where(predicates.toArray(new Predicate[0]));
         }
+        
 
         Query query = s.createQuery(q);
+        
+        if (params.get("page") != null && params.get("pageSize") != null) {
+            int page = Integer.parseInt(params.get("page"));
+            int pageSize = Integer.parseInt(params.get("pageSize"));
+            int start = (page - 1) * pageSize;
+            query.setFirstResult(start);
+            query.setMaxResults(pageSize);
+        }
+        
+        
         return query.getResultList();
     }
 
@@ -76,4 +87,28 @@ public class QnaRepositoryImpl implements QnaRepository {
         if (q != null)
             s.remove(q);
     }
+    
+    @Override
+    public long countQnas(Map<String, String> params) {
+        Session s = this.factory.getObject().getCurrentSession();
+        CriteriaBuilder b = s.getCriteriaBuilder();
+        CriteriaQuery<Long> q = b.createQuery(Long.class);
+        Root<Qna> root = q.from(Qna.class);
+        q.select(b.count(root));
+
+        if (params != null) {
+            List<Predicate> predicates = new ArrayList<>();
+
+            String kw = params.get("kw");
+            if (kw != null && !kw.isEmpty()) {
+                predicates.add(b.like(root.get("content"), "%" + kw + "%"));
+            }
+
+            q.where(predicates.toArray(new Predicate[0]));
+        }
+
+        Query<Long> query = s.createQuery(q);
+        return query.getSingleResult();
+    }
+
 }

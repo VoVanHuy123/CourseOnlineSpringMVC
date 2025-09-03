@@ -60,17 +60,24 @@ public class QnaServicesImpl implements QnaServices {
         }
 
         q.setContent(dto.getContent());
-        // gán quan hệ
-        if (dto.getLessonId() != null) {
-            Lesson l = new Lesson();
-            l.setId(dto.getLessonId());
-            q.setLessonId(l);
+
+        // Bắt buộc phải có Lesson
+        if (dto.getLessonId() == null) {
+            throw new IllegalArgumentException("Phải chọn bài học!");
         }
-        if (dto.getUserId() != null) {
-            User u = new User();
-            u.setId(dto.getUserId());
-            q.setUserId(u);
+        Lesson l = new Lesson();
+        l.setId(dto.getLessonId());
+        q.setLessonId(l);
+
+        // Bắt buộc phải có User
+        if (dto.getUserId() == null) {
+            throw new IllegalArgumentException("Phải chọn user!");
         }
+        User u = new User();
+        u.setId(dto.getUserId());
+        q.setUserId(u);
+
+        // Parent QnA (có thể null)
         if (dto.getParentId() != null) {
             Qna parent = new Qna();
             parent.setId(dto.getParentId());
@@ -83,5 +90,9 @@ public class QnaServicesImpl implements QnaServices {
     @Override
     public void delete(int id) {
         this.qnaRepo.delete(id);
+    }
+    @Override
+    public long countQnas(Map<String, String> params) {
+        return this.qnaRepo.countQnas(params);
     }
 }

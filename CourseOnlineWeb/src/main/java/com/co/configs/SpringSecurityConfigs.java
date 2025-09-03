@@ -66,17 +66,17 @@ public class SpringSecurityConfigs {
         return http.build();
     }
 
-//    @Bean
-//    public AuthenticationManager authManager(HttpSecurity http) throws Exception {
-//        AuthenticationManagerBuilder authBuilder
-//                = http.getSharedObject(AuthenticationManagerBuilder.class);
-//
-//        authBuilder
-//                .userDetailsService(userDetailsService)
-//                .passwordEncoder(passwordEncoder());
-//
-//        return authBuilder.build();
-//    }
+    @Bean
+    public AuthenticationManager authManager(HttpSecurity http) throws Exception {
+        AuthenticationManagerBuilder authBuilder
+                = http.getSharedObject(AuthenticationManagerBuilder.class);
+
+        authBuilder
+                .userDetailsService(userDetailsService)
+                .passwordEncoder(passwordEncoder());
+
+        return authBuilder.build();
+    }
 
     @Bean
     public Cloudinary cloudinary() {
