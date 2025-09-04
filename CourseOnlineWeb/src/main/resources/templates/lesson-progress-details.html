@@ -1,0 +1,69 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <th:object th:replace="base :: bt"></th:object>
+    </head>
+<body>
+    <div th:replace="base :: menu"></div>
+
+    <main class="container">
+        <h1 class="text-center text-info mt-2"
+            th:text="${lessonProgress.id == null} ? 'THÊM TIẾN ĐỘ' : 'CẬP NHẬT TIẾN ĐỘ'"></h1>
+
+        <form method="post" th:object="${lessonProgress}" th:action="@{/lesson-progress}">
+            <!-- Lesson Id (select) -->
+            <div class="form-floating mb-3 mt-3">
+                <select class="form-select" id="lessonId" th:field="*{lessonId}">
+                    <option value="" disabled selected>-- Chọn bài học --</option>
+                    <option th:each="lesson : ${lessons}"
+                            th:value="${lesson.id}"
+                            th:text="${lesson.title}">
+                    </option>
+                </select>
+                <label for="lessonId">Bài học</label>
+                <div class="text-danger" th:if="${#fields.hasErrors('lessonId')}" th:errors="*{lessonId}"></div>
+            </div>
+
+            <!-- User Id (select) -->
+            <div class="form-floating mb-3 mt-3">
+                <select class="form-select" id="userId" th:field="*{userId}">
+                    <option value="" disabled selected>-- Chọn người dùng --</option>
+                    <option th:each="user : ${users}"
+                            th:value="${user.id}"
+                            th:text="${user.username}">
+                    </option>
+                </select>
+                <label for="userId">Người dùng</label>
+                <div class="text-danger" th:if="${#fields.hasErrors('userId')}" th:errors="*{userId}"></div>
+            </div>
+
+            <!-- Completed -->
+            <div class="form-check mb-3 mt-3">
+                <input class="form-check-input" type="checkbox" id="isCompleted" th:field="*{isCompleted}">
+                <label class="form-check-label" for="isCompleted">Đã hoàn thành</label>
+            </div>
+
+            <!-- CompletedAt (read-only) -->
+            <div class="form-floating mb-3 mt-3" th:if="${lessonProgress.completedAt != null}">
+                <input type="text" class="form-control"
+                       th:value="${#dates.format(lessonProgress.completedAt,'dd/MM/yyyy HH:mm')}" readonly>
+                <label>Ngày hoàn thành</label>
+            </div>
+
+            <!-- Hidden ID -->
+            <input type="hidden" th:field="*{id}" />
+
+            <!-- Nút submit -->
+            <div class="form-floating mb-3 mt-3">
+                <button class="btn btn-success" th:if="${lessonProgress.id == null}">Thêm tiến độ</button>
+                <button class="btn btn-success" th:unless="${lessonProgress.id == null}">Cập nhật tiến độ</button>
+            </div>
+        </form>
+    </main>
+
+    <div th:replace="base :: footer"></div>
+<script th:src="@{/js/main.js}"></script>
+</body>
+</html>
+
+
