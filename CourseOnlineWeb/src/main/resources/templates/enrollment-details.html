@@ -8,7 +8,7 @@
 
 <main class="container">
     <h1 class="text-center text-info mt-2">QUẢN LÝ ENROLLMENT</h1>
-    <form method="post" th:object="${enrollment}" th:action="@{/enrollments}" enctype="multipart/form-data">
+    <form method="post" th:object="${enrollment}" th:action="@{/admin/enrollments}" enctype="multipart/form-data">
 
         <!-- ID (ẩn) -->
         <input type="hidden" th:field="*{id}" />

@@ -8,7 +8,7 @@
     <div th:replace="base :: menu"></div>
 
     <main class="container">
-        <form th:action="@{/courses}">
+        <form th:action="@{/admin/courses}">
             <div class="mb-3 mt-3">
                 <input type="text" class="form-control" placeholder="Tìm theo tên" name="kw">
             </div>
@@ -25,7 +25,7 @@
             </div>
         </form><!--
         -->            <div class="mt-2 mb-2">
-            <a th:href="@{/courses/create}" class="btn btn-info">Thêm sản phẩm</a>
+            <a th:href="@{/admin/courses/create}" class="btn btn-info">Thêm sản phẩm</a>
         </div><!--
         -->            <table class="table table-striped">
             <thead>
@@ -51,14 +51,14 @@
                     <td th:text="${#dates.format(c.createdAt, 'dd/MM/yyyy')}"></td>
                     <td>
                         <div class="d-flex gap-2">
-                            <a th:href="@{/courses} + '/' + ${c.id}" class="btn btn-success">Cập nhật</a>
-                            <form th:action="@{/courses/delete/{id}(id=${c.id})}" method="post"
+                            <a th:href="@{/admin/courses} + '/' + ${c.id}" class="btn btn-success">Cập nhật</a>
+                            <form th:action="@{/admin/courses/delete/{id}(id=${c.id})}" method="post"
                                   onsubmit="return confirm('Bạn chắc chắn muốn xóa?');">
                                 <button type="submit" class="btn btn-danger">Xóa</button>
                             </form>
                         </div>
 
-                        <!--<button class="btn btn-danger" th:onclick="'deleteCourse(\'' + @{/courses/} + ${c.id} + '\')'">Xóa</button>-->
+                        <!--<button class="btn btn-danger" th:onclick="'deleteCourse(\'' + @{/admin/courses/} + ${c.id} + '\')'">Xóa</button>-->
                         <!--<button class="btn btn-danger" >Xóa</button>-->
                     </td>
                 </tr>

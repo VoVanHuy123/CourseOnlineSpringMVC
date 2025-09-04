@@ -20,4 +20,5 @@ public interface UserRepository {
     public void addOrUpdate(User user);
     public void delete(int id);
     public long countUsers(Map<String, String> params);
+    public boolean authenticate(String username, String password);
 }

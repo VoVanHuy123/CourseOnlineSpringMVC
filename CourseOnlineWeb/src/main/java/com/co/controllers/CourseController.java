@@ -30,7 +30,7 @@ public class CourseController {
     @Autowired
     private CourseServices courseServices;
 
-    @GetMapping("/courses")
+    @GetMapping("/admin/courses")
     public String list(Model model, @RequestParam Map<String, String> params) {
         model.addAttribute("courses", this.courseServices.getCourses(params));
         long totalItems = this.courseServices.countCourses(params);
@@ -45,19 +45,19 @@ public class CourseController {
         return "courses";
     }
 
-    @GetMapping("/courses/create")
+    @GetMapping("/admin/courses/create")
     public String list(Model model) {
         model.addAttribute("course", new CourseDTO());
         return "course-details";
     }
 
-    @GetMapping("/courses/{courseId}")
+    @GetMapping("/admin/courses/{courseId}")
     public String update(Model model, @PathVariable(value = "courseId") int id) {
         model.addAttribute("course", this.courseServices.getCourseById(id));
         return "course-details";
     }
 
-    @PostMapping("/courses")
+    @PostMapping("/admin/courses")
     public String create(
             @ModelAttribute("course") @Valid CourseDTO courseDTO,
             BindingResult result,
@@ -70,13 +70,13 @@ public class CourseController {
         
         courseServices.addOrUpdate(courseDTO);
 
-        return "redirect:/courses";
+        return "redirect:/admin/courses";
     }
 
-    @PostMapping("/courses/delete/{courseId}")
+    @PostMapping("/admin/courses/delete/{courseId}")
     public String delete(@PathVariable("courseId") int id) {
         this.courseServices.delete(id);
-        return "redirect:/courses";
+        return "redirect:/admin/courses";
     }
 
 }
