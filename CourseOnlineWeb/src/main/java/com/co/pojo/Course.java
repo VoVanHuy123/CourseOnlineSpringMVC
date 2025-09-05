@@ -4,6 +4,7 @@
  */
 package com.co.pojo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Basic;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -72,14 +73,18 @@ public class Course implements Serializable {
     @Column(name = "created_at")
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
+//    @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "courseId",orphanRemoval = true)
     private Set<Chapter> chapterSet;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "courseId",orphanRemoval = true)
+    @JsonIgnore
     private Set<Review> reviewSet;
     @JoinColumn(name = "teacher_id", referencedColumnName = "id")
     @ManyToOne
+    @JsonIgnore
     private User teacherId;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "courseId",orphanRemoval = true)
+    @JsonIgnore
     private Set<Enrollment> enrollmentSet;
     
     

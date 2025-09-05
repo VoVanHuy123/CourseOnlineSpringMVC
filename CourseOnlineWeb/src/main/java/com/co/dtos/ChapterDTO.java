@@ -29,6 +29,7 @@ public class ChapterDTO {
     private String courseTitle;
 
     // nếu cần trả về danh sách lessons
+    
     private List<LessonDTO> lessons;
 
     public ChapterDTO() {}

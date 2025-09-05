@@ -60,41 +60,16 @@ public class SpringSecurityConfigs {
         return new HandlerMappingIntrospector();
     }
 
-//    @Bean
-//    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws
-//            Exception {
-//        
-//        http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
-//                .csrf(c -> c.disable())
-//                .authorizeHttpRequests(requests -> requests
-//                    .requestMatchers("/api/auth/**", "/public/**").permitAll()
-//                    .requestMatchers("/", "/home").authenticated()
-//                    .requestMatchers("/admin/**").hasAuthority("admin")
-//                    .anyRequest().authenticated()
-//                )
-//                .formLogin(form -> form
-//                        .loginPage("/login")
-//                        .loginProcessingUrl("/login")
-//                        .defaultSuccessUrl("/", true)
-//                        .failureUrl("/login?error=true").permitAll())
-//                .logout(logout-> logout
-//                        .logoutSuccessUrl("/login").permitAll()
-//                );
-//       
-//        http.addFilterBefore(jwtFilter, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class);
-//        return http.build();
-//    }
-    
-    // 🔹 API security: JWT
     @Bean
     @Order(1)
     public SecurityFilterChain apiSecurity(HttpSecurity http, JWTFilter jwtFilter) throws Exception {
         http
+            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .securityMatcher("/api/**") // chỉ áp dụng cho API
             .csrf(csrf -> csrf.disable())
             .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/login", "/api/auth/register", "/api/public/**").permitAll()
+                .requestMatchers("/api/auth/login", "/api/auth/register","/api/courses","/api/courses/**", "/api/public/**").permitAll()
                 .requestMatchers("/api/secure/auth/profile").authenticated()
                 .anyRequest().authenticated()
             )
@@ -108,6 +83,7 @@ public class SpringSecurityConfigs {
     @Order(2)
     public SecurityFilterChain webSecurity(HttpSecurity http) throws Exception {
         http
+            
             .securityMatcher("/**") // tất cả request còn lại = web
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/", "/home", "/css/**", "/js/**").permitAll()
@@ -145,9 +121,9 @@ public class SpringSecurityConfigs {
     public Cloudinary cloudinary() {
         Cloudinary cloudinary
                 = new Cloudinary(ObjectUtils.asMap(
-                        "cloud_name", "dxxwcby8l",
-                        "api_key", "448651448423589",
-                        "api_secret", "ftGud0r1TTqp0CGp5tjwNmkAm-A",
+                        "cloud_name", "dnzjjdg0v",
+                        "api_key", "123958894742992",
+                        "api_secret", "kQugdU7BMnVH5E4OYtFLvGKrHfk",
                         "secure", true));
         return cloudinary;
     }

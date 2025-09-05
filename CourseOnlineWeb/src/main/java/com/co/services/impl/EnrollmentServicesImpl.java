@@ -66,7 +66,7 @@ public class EnrollmentServicesImpl implements  EnrollmentServices{
 
         // Map dữ liệu từ DTO → Entity
         if (dto.getCourseId() != null) {
-            Course c = this.courseRepo.getCourseById(dto.getCourseId());
+            Course c = this.courseRepo.getCourseById(dto.getCourseId(),false);
             if (c == null) {
                 throw new IllegalArgumentException("Course không tồn tại!");
             }

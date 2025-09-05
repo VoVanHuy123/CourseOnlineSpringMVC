@@ -74,8 +74,14 @@ public class UserServicesImpl implements UserServices {
         User u;
 
         if (user.getId() == null) {
-            u = new User();
+            u = this.getUserByUsername(user.getUsername());
+            if( u != null){
+                throw new RuntimeException("❌ Tên đăng nhập đã được sử dụng!");
+            } else{
+                u = new User();
             u.setCreatedAt(new Date());
+            }
+            
         } else {
             u = userRepo.getUserById(user.getId());
             if (u == null) {
@@ -93,11 +99,24 @@ public class UserServicesImpl implements UserServices {
 
         }
         
+        if(user.getIsVerify()!= null){
+            u.setIsVerify(user.getIsVerify());
+        }
+        else{
+            if("teacher".equals(user.getRole())){
+                u.setIsVerify(Boolean.FALSE);
+            }
+            else{
+                u.setIsVerify(Boolean.TRUE);
+            }
+        }
+        
+        
+        
         u.setEmail(user.getEmail());
         u.setPhoneNumber(user.getPhoneNumber());
         u.setUsername(user.getUsername());
         u.setRole(user.getRole());
-        u.setIsVerify(user.getIsVerify());
         u.setFirstName(user.getFirstName());
         u.setLastName(user.getLastName());
         u.setPassword(user.getPassword());

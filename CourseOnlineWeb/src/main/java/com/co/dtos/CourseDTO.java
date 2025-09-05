@@ -4,11 +4,15 @@
  */
 package com.co.dtos;
 
+import com.co.pojo.Course;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -16,6 +20,20 @@ import org.springframework.web.multipart.MultipartFile;
  * @author ACER
  */
 public class CourseDTO {
+
+    /**
+     * @return the isPublic
+     */
+    public Boolean getIsPublic() {
+        return isPublic;
+    }
+
+    /**
+     * @param isPublic the isPublic to set
+     */
+    public void setIsPublic(Boolean isPublic) {
+        this.isPublic = isPublic;
+    }
     private Integer id;
     @NotBlank(message = "Tiêu đề không được để trống")
     private String title;
@@ -34,11 +52,30 @@ public class CourseDTO {
     private Integer lessonsCount;
     
     private Date createdAt = new Date();
-    private Boolean public1;
-
+    private Boolean isPublic;
+    
+    private String teacherName;
+    private int teacherId;
+    
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private MultipartFile imageFile;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private MultipartFile videoFile;
-
+    private List<ChapterDTO> chapters;
+    public CourseDTO() {
+    }
+    public CourseDTO(Course course){
+        this.id = course.getId();
+        this.title = course.getTitle();
+        this.description = course.getDescription();
+        this.tuitionFee = course.getTuitionFee();
+        this.imageUrl = course.getImageUrl();
+        this.introVideoUrl = course.getImageUrl();
+        this.createdAt = course.getCreatedAt();
+        this.isPublic = course.getPublic1();
+        this.teacherId = course.getTeacherId().getId();
+        this.teacherName = course.getTeacherId().getFullName();
+    }
     /**
      * @return the title
      */
@@ -109,19 +146,7 @@ public class CourseDTO {
         this.lessonsCount = lessonsCount;
     }
 
-    /**
-     * @return the public1
-     */
-    public Boolean getPublic1() {
-        return public1;
-    }
-
-    /**
-     * @param public1 the public1 to set
-     */
-    public void setPublic1(Boolean public1) {
-        this.public1 = public1;
-    }
+    
 
     /**
      * @return the imageFile
@@ -205,6 +230,48 @@ public class CourseDTO {
      */
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
+    }
+
+    /**
+     * @return the chapters
+     */
+    public List<ChapterDTO> getChapters() {
+        return chapters;
+    }
+
+    /**
+     * @param chapters the chapters to set
+     */
+    public void setChapters(List<ChapterDTO> chapters) {
+        this.chapters = chapters;
+    }
+
+    /**
+     * @return the teacherName
+     */
+    public String getTeacherName() {
+        return teacherName;
+    }
+
+    /**
+     * @param teacherName the teacherName to set
+     */
+    public void setTeacherName(String teacherName) {
+        this.teacherName = teacherName;
+    }
+
+    /**
+     * @return the teacherId
+     */
+    public int getTeacherId() {
+        return teacherId;
+    }
+
+    /**
+     * @param teacherId the teacherId to set
+     */
+    public void setTeacherId(int teacherId) {
+        this.teacherId = teacherId;
     }
 
     
