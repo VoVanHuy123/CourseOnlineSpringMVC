@@ -6,10 +6,14 @@ package com.co.services.impl;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
+import com.co.dtos.ChapterDTO;
 import com.co.dtos.CourseDTO;
 import com.co.pojo.Course;
+import com.co.pojo.User;
 import com.co.repositories.CourseRepository;
+import com.co.repositories.UserRepository;
 import com.co.services.CourseServices;
+import com.co.services.UserServices;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -30,16 +34,21 @@ public class CourseServicesImpl implements CourseServices {
     @Autowired
     private CourseRepository courseRepo;
     @Autowired
+    private UserRepository userRepo;
+    @Autowired
     private Cloudinary cloudinary;
 
     @Override
-    public List<Course> getCourses(Map<String, String> params) {
-        return this.courseRepo.getCourses(params);
+    public List<CourseDTO> getCourses(Map<String, String> params) {
+        List<Course> courses = this.courseRepo.getCourses(params);
+        return courses.stream()
+                .map(CourseDTO::new) // gọi constructor để convert
+                .toList();
     }
 
     @Override
-    public CourseDTO getCourseById(int id) {
-        Course c = this.courseRepo.getCourseById(id);
+    public CourseDTO getCourseById(int id ,boolean includeChapters) {
+        Course c = this.courseRepo.getCourseById(id,true);
         
         if (c == null) return null;
 
@@ -49,11 +58,19 @@ public class CourseServicesImpl implements CourseServices {
         courseDto.setDescription(c.getDescription());
         courseDto.setImageUrl(c.getImageUrl());
         courseDto.setIntroVideoUrl(c.getIntroVideoUrl());
-        courseDto.setPublic1(c.getPublic1());
+        courseDto.setIsPublic(c.getPublic1());
         courseDto.setTuitionFee(c.getTuitionFee());
         courseDto.setCreatedAt(c.getCreatedAt());
+        courseDto.setTeacherId(c.getTeacherId().getId());
+        courseDto.setTeacherName(c.getTeacherId().getFullName());
         // map thêm các field cần thiết
-
+       
+        if (includeChapters && c.getChapterSet() != null) {
+            List<ChapterDTO> chapters = c.getChapterSet().stream()
+                    .map(ch -> new ChapterDTO(ch)) // bạn cần constructor trong ChapterDTO
+                    .toList();
+            courseDto.setChapters(chapters);
+        }
         return courseDto;
     }
 
@@ -64,10 +81,14 @@ public class CourseServicesImpl implements CourseServices {
         if (dto.getId() == null) {
             c = new Course();
             c.setCreatedAt(new Date());
+            c.setPublic1(false);
         } else {
-            c = courseRepo.getCourseById(dto.getId());
+            c = courseRepo.getCourseById(dto.getId(),false);
             if (c == null) {
                 throw new IllegalArgumentException("Course không tồn tại!");
+            }else{
+                c.setPublic1(dto.getIsPublic());
+                
             }
         }
 
@@ -75,7 +96,14 @@ public class CourseServicesImpl implements CourseServices {
         if (dto.getTuitionFee().compareTo(BigDecimal.valueOf(100000000)) > 0) {
             throw new IllegalArgumentException("Học phí không được vượt quá 100 triệu");
         }
-
+        
+        User u = this.userRepo.getUserById(dto.getTeacherId());
+        if (c == null) {
+                throw new IllegalArgumentException("Teacher không tồn tại!");
+        }else{
+            c.setTeacherId(u);
+        }
+                
         // Upload ảnh lên Cloudinary (nếu có)
         if (dto.getImageFile() != null && !dto.getImageFile().isEmpty()) {
             try {
@@ -103,7 +131,7 @@ public class CourseServicesImpl implements CourseServices {
         c.setTuitionFee(dto.getTuitionFee());
         c.setDuration(dto.getDuration());
         c.setLessonsCount(dto.getLessonsCount());
-        c.setPublic1(dto.getPublic1());
+        
         this.courseRepo.addOrUpdate(c);
     }
 

@@ -30,19 +30,29 @@ import org.springframework.transaction.annotation.Transactional;
 @Repository
 @Transactional
 public class UserRepositoryImpl implements UserRepository {
-     private static final int PAGE_SIZE = 8;
+
+    private static final int PAGE_SIZE = 8;
     @Autowired
     private LocalSessionFactoryBean factory;
-    
+
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
     @Override
     public User getUserByUsername(String username) {
+//        Session s = this.factory.getObject().getCurrentSession();
+//        Query q = s.createNamedQuery("User.findByUsername", User.class);
+//        q.setParameter("username", username);
+//        return (User) q.getSingleResult();
         Session s = this.factory.getObject().getCurrentSession();
-        Query q = s.createNamedQuery("User.findByUsername", User.class);
+        Query<User> q = s.createNamedQuery("User.findByUsername", User.class);
         q.setParameter("username", username);
-        return (User) q.getSingleResult();
+
+        List<User> results = q.getResultList();
+        if (results.isEmpty()) {
+            return null; // không tìm thấy user
+        }
+        return results.get(0); // trả về user đầu tiên
     }
 
     @Override
@@ -60,7 +70,7 @@ public class UserRepositoryImpl implements UserRepository {
             String kw = params.get("kw");
             if (kw != null && !kw.isEmpty()) {
                 Predicate firstNameLike = b.like(root.get("firstName"), String.format("%%%s%%", kw));
-                Predicate lastNameLike = b.like(root.get("lastName"),String.format("%%%s%%", kw));
+                Predicate lastNameLike = b.like(root.get("lastName"), String.format("%%%s%%", kw));
                 predicates.add(b.or(firstNameLike, lastNameLike));
             }
 
@@ -68,12 +78,12 @@ public class UserRepositoryImpl implements UserRepository {
             if (role != null && !role.isEmpty()) {
                 predicates.add(b.equal(root.get("role"), role));
             }
-            
+
             String isVerify = params.get("isVerify");
             if (isVerify != null && !isVerify.isEmpty()) {
                 predicates.add(b.equal(root.get("isVerify"), Boolean.valueOf(isVerify)));
             }
-            
+
             String username = params.get("username");
             if (kw != null && !kw.isEmpty()) {
                 predicates.add(b.like(root.get("username"), String.format("%%%s%%", username)));
@@ -91,19 +101,17 @@ public class UserRepositoryImpl implements UserRepository {
         Query q = s.createQuery(query);
 
         // phân trang LIMIT OFFSET
-        
-            if (params != null) {
-                String p = params.get("page");
-                if (p != null && !p.isEmpty()) {
-                    int page = Integer.parseInt(p);
+        if (params != null) {
+            String p = params.get("page");
+            if (p != null && !p.isEmpty()) {
+                int page = Integer.parseInt(p);
 
-                    int start = (page - 1) * PAGE_SIZE;
+                int start = (page - 1) * PAGE_SIZE;
 
-                    q.setMaxResults(PAGE_SIZE);
-                    q.setFirstResult(start);
-                }
+                q.setMaxResults(PAGE_SIZE);
+                q.setFirstResult(start);
             }
-        
+        }
 
         return q.getResultList();
     }
@@ -135,7 +143,7 @@ public class UserRepositoryImpl implements UserRepository {
             s.remove(u);
         }
     }
-    
+
     @Override
     public boolean authenticate(String username, String password) {
         User u = this.getUserByUsername(username);
@@ -156,7 +164,7 @@ public class UserRepositoryImpl implements UserRepository {
             String kw = params.get("kw");
             if (kw != null && !kw.isEmpty()) {
                 Predicate firstNameLike = b.like(root.get("firstName"), String.format("%%%s%%", kw));
-                Predicate lastNameLike = b.like(root.get("lastName"),String.format("%%%s%%", kw));
+                Predicate lastNameLike = b.like(root.get("lastName"), String.format("%%%s%%", kw));
                 predicates.add(b.or(firstNameLike, lastNameLike));
             }
 
@@ -164,24 +172,22 @@ public class UserRepositoryImpl implements UserRepository {
             if (role != null && !role.isEmpty()) {
                 predicates.add(b.equal(root.get("role"), role));
             }
-            
+
             String isVerify = params.get("isVerify");
             if (isVerify != null && !isVerify.isEmpty()) {
                 predicates.add(b.equal(root.get("isVerify"), Boolean.valueOf(isVerify)));
             }
-            
+
             String username = params.get("username");
             if (kw != null && !kw.isEmpty()) {
                 predicates.add(b.like(root.get("username"), String.format("%%%s%%", username)));
             }
 
-         
         }
 
         cq.where(predicates.toArray(new Predicate[0]));
 
         return s.createQuery(cq).getSingleResult();
     }
-    
 
 }

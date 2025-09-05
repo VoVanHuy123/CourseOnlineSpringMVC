@@ -62,7 +62,7 @@ public class ChapterSevevicesImpl implements ChapterServices {
             }
         }
         if (chapterDto.getCourseId() != null) {
-            Course course = courseRepo.getCourseById(chapterDto.getCourseId());
+            Course course = courseRepo.getCourseById(chapterDto.getCourseId(),false);
             if (course == null) {
                 throw new RuntimeException("không tìm thấy Course");
             }

@@ -53,7 +53,7 @@ public class CourseController {
 
     @GetMapping("/admin/courses/{courseId}")
     public String update(Model model, @PathVariable(value = "courseId") int id) {
-        model.addAttribute("course", this.courseServices.getCourseById(id));
+        model.addAttribute("course", this.courseServices.getCourseById(id,false));
         return "course-details";
     }
 

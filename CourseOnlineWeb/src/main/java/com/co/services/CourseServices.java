@@ -14,8 +14,8 @@ import java.util.Map;
  * @author ACER
  */
 public interface CourseServices {
-    public List<Course> getCourses(Map<String, String> params);
-    public CourseDTO getCourseById (int id);
+    public List<CourseDTO> getCourses(Map<String, String> params);
+    public CourseDTO getCourseById(int id ,boolean includeChapters);
     public void addOrUpdate(CourseDTO c);
     public void delete(int id);
     public long countCourses(Map<String, String> params);
