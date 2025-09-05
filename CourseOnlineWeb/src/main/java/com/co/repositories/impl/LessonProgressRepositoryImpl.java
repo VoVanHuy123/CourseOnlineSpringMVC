@@ -1,0 +1,116 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package com.co.repositories.impl;
+
+import com.co.pojo.LessonProgress;
+import com.co.repositories.LessonProgressRepository;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import org.hibernate.Session;
+import org.hibernate.query.Query;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+/**
+ *
+ * @author ADMIN
+ */
+@Repository
+@Transactional
+public class LessonProgressRepositoryImpl implements LessonProgressRepository{
+    private static final int PAGE_SIZE = 8;
+
+    @Autowired
+    private LocalSessionFactoryBean factory;
+
+    @Override
+    public List<LessonProgress> getLessonProgresses(Map<String, String> params) {
+        Session s = this.factory.getObject().getCurrentSession();
+        CriteriaBuilder b = s.getCriteriaBuilder();
+        CriteriaQuery<LessonProgress> cq = b.createQuery(LessonProgress.class);
+        Root<LessonProgress> root = cq.from(LessonProgress.class);
+        cq.select(root);
+
+        List<Predicate> predicates = new ArrayList<>();
+
+        if (params != null) {
+            String userId = params.get("userId");
+            if (userId != null && !userId.isEmpty()) {
+                predicates.add(b.equal(root.get("userId").get("id"), Integer.parseInt(userId)));
+            }
+            String lessonId = params.get("lessonId");
+            if (lessonId != null && !lessonId.isEmpty()) {
+                predicates.add(b.equal(root.get("lessonId").get("id"), Integer.parseInt(lessonId)));
+            }
+            String completed = params.get("isCompleted");
+            if (completed != null && !completed.isEmpty()) {
+                predicates.add(b.equal(root.get("isCompleted"), Boolean.valueOf(completed)));
+            }
+        }
+
+        cq.where(predicates.toArray(new Predicate[0]));
+        Query q = s.createQuery(cq);
+
+        if (params != null) {
+            String p = params.get("page");
+            if (p != null) {
+                int page = Integer.parseInt(p);
+                q.setFirstResult((page - 1) * PAGE_SIZE);
+                q.setMaxResults(PAGE_SIZE);
+            }
+        }
+
+        return q.getResultList();
+    }
+
+    @Override
+    public LessonProgress getLessonProgressById(int id) {
+        Session s = this.factory.getObject().getCurrentSession();
+        return s.find(LessonProgress.class, id);
+    }
+
+    @Override
+    public void addOrUpdate(LessonProgress lp) {
+        Session s = this.factory.getObject().getCurrentSession();
+        if (lp.getId() == null)
+            s.persist(lp);
+        else
+            s.merge(lp);
+    }
+
+    @Override
+    public void delete(int id) {
+        Session s = this.factory.getObject().getCurrentSession();
+        LessonProgress lp = getLessonProgressById(id);
+        if (lp != null) s.remove(lp);
+    }
+
+    @Override
+    public long countLessonProgress(Map<String, String> params) {
+        Session s = this.factory.getObject().getCurrentSession();
+        CriteriaBuilder b = s.getCriteriaBuilder();
+        CriteriaQuery<Long> cq = b.createQuery(Long.class);
+        Root<LessonProgress> root = cq.from(LessonProgress.class);
+        cq.select(b.count(root));
+
+        List<Predicate> predicates = new ArrayList<>();
+        if (params != null) {
+            String userId = params.get("userId");
+            if (userId != null && !userId.isEmpty()) {
+                predicates.add(b.equal(root.get("userId").get("id"), Integer.parseInt(userId)));
+            }
+        }
+
+        cq.where(predicates.toArray(new Predicate[0]));
+        return s.createQuery(cq).getSingleResult();
+    }  
+}

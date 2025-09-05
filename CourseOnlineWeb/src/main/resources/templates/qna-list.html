@@ -1,0 +1,87 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        
+        <th:block th:replace="base :: bt"></th:block>
+    </head>
+    <body>
+       
+        <div th:replace="base :: menu"></div>
+
+        <main class="container">
+            <h2 class="mt-3">Danh sách QnA</h2>
+
+            
+            <form th:action="@{/qnas}" method="get">
+                <div class="mb-3 mt-3">
+                    <input type="text" class="form-control" placeholder="Tìm theo nội dung" name="kw">
+                </div>
+                <div class="mb-3 mt-3">
+                    <button class="btn btn-info">Tìm QnA</button>
+                </div>
+            </form>
+
+            <!-- Nút thêm mới -->
+            <div class="mt-2 mb-2">
+                <a th:href="@{/qnas/create}" class="btn btn-success">Thêm QnA</a>
+            </div>
+
+            <!-- Bảng danh sách -->
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nội dung</th>
+                        <th>User</th>
+                        <th>Bài học</th>
+                        <th>Hành động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="q : ${qnas}">
+                        <td th:text="${q.id}"></td>
+                        <td th:text="${q.content}"></td>
+                        <td th:text="${q.userId.username}"></td>
+                        <td th:text="${q.lessonId.title}"></td>
+                        <td>
+                            <a th:href="@{/qnas/{id}(id=${q.id})}" class="btn btn-success btn-sm">Cập nhật</a>
+                            <a th:href="@{/qnas/delete/{id}(id=${q.id})}" 
+                               class="btn btn-danger btn-sm"
+                               onclick="return confirm('Bạn có chắc muốn xóa QnA này?')">Xóa</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            
+             <!-- PHÂN TRANG -->
+            <div class="text-center">
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-center">
+                     
+                        <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+                            <a class="page-link" th:href="@{/qnas(page=${currentPage - 1}, kw=${param.kw})}">Trước</a>
+                        </li>
+
+                        <li class="page-item"
+                            th:each="i : ${#numbers.sequence(1, totalPages)}"
+                            th:classappend="${i == currentPage} ? 'active'">
+                            <a class="page-link" th:href="@{/qnas(page=${i}, kw=${param.kw})}"
+                               th:text="${i}"></a>
+                        </li>
+
+                        <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                            <a class="page-link" th:href="@{/qnas(page=${currentPage + 1}, kw=${param.kw})}">Sau</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </main>
+
+        
+        <div th:replace="base :: footer"></div>
+
+      
+        <script th:src="@{/js/main.js}"></script>
+    </body>
+</html>
+

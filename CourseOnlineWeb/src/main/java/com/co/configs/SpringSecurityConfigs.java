@@ -60,32 +60,6 @@ public class SpringSecurityConfigs {
         return new HandlerMappingIntrospector();
     }
 
-//    @Bean
-//    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws
-//            Exception {
-//        
-//        http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
-//                .csrf(c -> c.disable())
-//                .authorizeHttpRequests(requests -> requests
-//                    .requestMatchers("/api/auth/**", "/public/**").permitAll()
-//                    .requestMatchers("/", "/home").authenticated()
-//                    .requestMatchers("/admin/**").hasAuthority("admin")
-//                    .anyRequest().authenticated()
-//                )
-//                .formLogin(form -> form
-//                        .loginPage("/login")
-//                        .loginProcessingUrl("/login")
-//                        .defaultSuccessUrl("/", true)
-//                        .failureUrl("/login?error=true").permitAll())
-//                .logout(logout-> logout
-//                        .logoutSuccessUrl("/login").permitAll()
-//                );
-//       
-//        http.addFilterBefore(jwtFilter, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class);
-//        return http.build();
-//    }
-    
-    // 🔹 API security: JWT
     @Bean
     @Order(1)
     public SecurityFilterChain apiSecurity(HttpSecurity http, JWTFilter jwtFilter) throws Exception {

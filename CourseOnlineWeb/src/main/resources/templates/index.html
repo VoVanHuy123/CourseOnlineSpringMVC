@@ -1,4 +1,4 @@
-<!doctype html>
+ <!doctype html>
 <html xmlns:th="http://www.thymeleaf.org">
     <head>
     <th:object th:replace="base :: bt"></th:object>
@@ -8,6 +8,11 @@
 
         <main class="container">
             <div class="mt-4 mb-4">
+
+                <a class="nav-link" th:href="@{/admin/qnas}">QnA</a>
+                <a class="nav-link" th:href="@{/admin/lesson-progress}">Tiến độ học bài</a>
+                <a class="nav-link" th:href="@{/admin/payments}">Thanh toán</a>
+                <a class="nav-link" th:href="@{/admin/reviews}">Đánh giá</a>
                 <a class="nav-link" th:href="@{/admin/courses}">Khóa Học</a>
                 <a class="nav-link" th:href="@{/admin/chapters}">Chương</a>
                 <a class="nav-link" th:href="@{/admin/lessons}">Bài học</a>
@@ -15,7 +20,7 @@
                 <a class="nav-link" th:href="@{/admin/enrollments}">Đăng kí khóa học</a>
             </div>
             
-
+           
         </main>
 
         <div th:replace="base :: footer"></div>

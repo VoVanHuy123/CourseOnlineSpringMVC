@@ -1,0 +1,115 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <th:block th:replace="base :: bt"></th:block>
+    </head>
+    <body>
+    <div th:replace="base :: menu"></div>
+
+    <main class="container">
+        <form th:action="@{/payments}">
+            <div class="row mb-3 mt-3">
+                <div class="col-6">
+                    <select class="form-select" name="method">
+                        <option value="">-- Phương thức --</option>
+                        <option value="cash">CASH</option>
+                        <option value="paypal">PAYPAL</option>
+                        <option value="stripe">STRIPE</option>
+                        <option value="momo">MOMO</option>
+                        <option value="zalopay">ZALOPAY</option>
+                    </select>
+                </div>
+                <div class="col-6">
+                    <select class="form-select" name="status">
+                        <option value="">-- Trạng thái --</option>
+                        <option value="PENDING">PENDING</option>
+                        <option value="PAID">PAID</option>
+                        <option value="FAILED">FAILED</option>
+                    </select>
+                </div>
+            </div>
+            <div class="mb-3 mt-3">
+                <button class="btn btn-info">Tìm payment</button>
+            </div>
+        </form>
+
+        <div class="mt-2 mb-2">
+            <a th:href="@{/payments/create}" class="btn btn-info">Thêm payment</a>
+        </div>
+
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>STT</th>
+                <th>ID</th>
+                <th>Số tiền</th>
+                <th>Phương thức</th>
+                <th>Mã giao dịch</th>
+                <th>Trạng thái</th>
+                <th>Ngày thanh toán</th>
+                <th>Enrollment ID</th>
+                <th>Hành động</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="p, stat : ${payments}">
+                <td th:text="${stat.count}"></td>
+                <td th:text="${p.id}"></td>
+                <td th:text="${#numbers.formatDecimal(p.amount,0,'COMMA',2,'POINT')}"></td>
+                <td th:text="${p.method}"></td>
+                <td th:text="${p.transactionCode}"></td>
+                <td>
+                    <span th:text="${p.status}"
+                          th:classappend="${p.status == 'success'} ? 'badge bg-success' 
+                                         : (${p.status == 'failed'} ? 'badge bg-danger' : 'badge bg-warning')">
+                    </span>
+                </td>
+
+                <td th:text="${#dates.format(p.paidAt,'dd/MM/yyyy HH:mm')}"></td>
+                <td th:text="${p.enrollmentId}"></td>
+                <td>
+                    <div class="d-flex gap-2">
+                        <a th:href="@{/payments/{id}(id=${p.id})}" class="btn btn-success">Cập nhật</a>
+                        <form th:action="@{/payments/delete/{id}(id=${p.id})}" method="post"
+                              onsubmit="return confirm('Bạn chắc chắn muốn xóa payment này?');">
+                            <button type="submit" class="btn btn-danger">Xóa</button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        
+        <!-- Phân trang -->
+        <div class="text-center">
+            <nav aria-label="Page navigation">
+                <ul class="pagination">                   
+                    <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+                        <a class="page-link"
+                           th:href="@{/payments((page=${currentPage > 1 ? currentPage - 1 : 1})}">
+                            Trước
+                        </a>
+                    </li>
+                
+                    <li class="page-item"
+                        th:each="i : ${#numbers.sequence(1, totalPages)}"
+                        th:classappend="${i == currentPage} ? 'active'">
+                        <a class="page-link" th:href="@{/payments((page=${i})}" th:text="${i}"></a>
+                    </li>
+                  
+                    <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                        <a class="page-link"
+                           th:href="@{/payments((page=${currentPage < totalPages ? currentPage + 1 : totalPages})}">
+                            Sau
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </main>
+
+    <div th:replace="base :: footer"></div>
+    <script th:src="@{/js/main.js}"></script>
+    </body>
+</html>
