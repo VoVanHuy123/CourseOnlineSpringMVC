@@ -10,7 +10,7 @@
 
     <main class="container">
         <h1 class="text-center text-info mt-2">QUẢN LÝ KHÓA HỌC</h1>
-        <form method="post" th:object="${course}" th:action="@{/courses}" enctype="multipart/form-data">
+        <form method="post" th:object="${course}" th:action="@{/admin/courses}" enctype="multipart/form-data">
             <div class="form-floating mb-3 mt-3">
                 <input type="text" class="form-control" id="title" th:field="*{title}" placeholder="Tên khóa học">
                 <label for="name">Tên khóa học</label>

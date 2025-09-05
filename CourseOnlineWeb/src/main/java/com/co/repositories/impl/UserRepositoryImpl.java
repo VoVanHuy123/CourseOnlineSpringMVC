@@ -33,6 +33,9 @@ public class UserRepositoryImpl implements UserRepository {
      private static final int PAGE_SIZE = 8;
     @Autowired
     private LocalSessionFactoryBean factory;
+    
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
 
     @Override
     public User getUserByUsername(String username) {
@@ -116,10 +119,10 @@ public class UserRepositoryImpl implements UserRepository {
         Session s = this.factory.getObject().getCurrentSession();
 
         if (user.getId() != null) {
-            user.setPassword(this.encoderPassword(user.getPassword()));
+            user.setPassword(this.passwordEncoder.encode(user.getPassword()));
             s.merge(user);
         } else {
-            user.setPassword(this.encoderPassword(user.getPassword()));
+            user.setPassword(this.passwordEncoder.encode(user.getPassword()));
             s.persist(user);
         }
     }
@@ -131,6 +134,13 @@ public class UserRepositoryImpl implements UserRepository {
         if (u != null) {
             s.remove(u);
         }
+    }
+    
+    @Override
+    public boolean authenticate(String username, String password) {
+        User u = this.getUserByUsername(username);
+
+        return this.passwordEncoder.matches(password, u.getPassword());
     }
 
     @Override
@@ -171,10 +181,6 @@ public class UserRepositoryImpl implements UserRepository {
         cq.where(predicates.toArray(new Predicate[0]));
 
         return s.createQuery(cq).getSingleResult();
-    }
-    private String encoderPassword(String password){
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        return encoder.encode(password);
     }
     
 

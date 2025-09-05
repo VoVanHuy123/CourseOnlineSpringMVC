@@ -6,18 +6,27 @@ package com.co.configs;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
+import com.co.JWT.JWTFilter;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
 /**
@@ -30,10 +39,14 @@ import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 @ComponentScan(basePackages = {
     "com.co.controllers",
     "com.co.repositories",
-    "com.co.services"
+    "com.co.services",
+    "com.co.JWT"
 })
 public class SpringSecurityConfigs {
-
+    
+    @Autowired
+    private JWTFilter jwtFilter;
+    
     @Autowired
     private UserDetailsService userDetailsService;
 
@@ -48,21 +61,45 @@ public class SpringSecurityConfigs {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws
-            Exception {
-        http.csrf(c -> c.disable())
-                .authorizeHttpRequests(requests -> requests
-                    .requestMatchers("/", "/home").authenticated()
-                    .requestMatchers("/**").hasAuthority("admin")
-                )
-                .formLogin(form -> form
-                        .loginPage("/login")
-                        .loginProcessingUrl("/login")
-                        .defaultSuccessUrl("/", true)
-                        .failureUrl("/login?error=true").permitAll())
-                .logout(logout-> logout
-                        .logoutSuccessUrl("/login").permitAll()
-                );
+    @Order(1)
+    public SecurityFilterChain apiSecurity(HttpSecurity http, JWTFilter jwtFilter) throws Exception {
+        http
+            .securityMatcher("/api/**") // chỉ áp dụng cho API
+            .csrf(csrf -> csrf.disable())
+            .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/api/auth/login", "/api/auth/register", "/api/public/**").permitAll()
+                .requestMatchers("/api/secure/auth/profile").authenticated()
+                .anyRequest().authenticated()
+            )
+            .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+
+        return http.build();
+    }
+
+    // 🔹 Web security: form login
+    @Bean
+    @Order(2)
+    public SecurityFilterChain webSecurity(HttpSecurity http) throws Exception {
+        http
+            .securityMatcher("/**") // tất cả request còn lại = web
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/", "/home", "/css/**", "/js/**").permitAll()
+                .requestMatchers("/admin/**").hasAuthority("admin")
+                .anyRequest().authenticated()
+            )
+            .formLogin(form -> form
+                .loginPage("/login")
+                .loginProcessingUrl("/login")
+                .defaultSuccessUrl("/", true)
+                .failureUrl("/login?error=true")
+                .permitAll()
+            )
+            .logout(logout -> logout
+                .logoutSuccessUrl("/login?logout=true")
+                .permitAll()
+            );
+
         return http.build();
     }
 
@@ -87,5 +124,28 @@ public class SpringSecurityConfigs {
                         "api_secret", "ftGud0r1TTqp0CGp5tjwNmkAm-A",
                         "secure", true));
         return cloudinary;
+    }
+    
+    @Bean
+    @Order(0)
+    public StandardServletMultipartResolver multipartResolver() {
+        return new StandardServletMultipartResolver();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+
+        CorsConfiguration config = new CorsConfiguration();
+
+        config.setAllowedOrigins(List.of("http://localhost:3000/")); 
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
+        config.setExposedHeaders(List.of("Authorization"));
+        config.setAllowCredentials(true); 
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+
+        return source;
     }
 }

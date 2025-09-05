@@ -8,7 +8,7 @@
     <div th:replace="base :: menu"></div>
 
     <main class="container">
-        <form th:action="@{/chapters}">
+        <form th:action="@{/admin/chapters}">
             <div class="row mb-3 mt-3">
                 <div  class="col-6">
                     <input type="text" class="form-control" placeholder="Tìm theo tên chương" name="kw">
@@ -22,7 +22,7 @@
             </div>
         </form><!--
         -->            <div class="mt-2 mb-2">
-            <a th:href="@{/chapters/create}" class="btn btn-info">Thêm Chương</a>
+            <a th:href="@{/admin/chapters/create}" class="btn btn-info">Thêm Chương</a>
         </div><!--
         -->            <table class="table table-striped">
             <thead>
@@ -48,8 +48,8 @@
                     <td th:text="${ch.courseId}"></td>
                     <td>
                         <div class="d-flex gap-2">
-                            <a th:href="@{/chapters/{id}(id=${ch.id})}" class="btn btn-success">Cập nhật</a>
-                            <form th:action="@{/chapters/delete/{id}(id=${ch.id})}" method="post"
+                            <a th:href="@{/admin/chapters/{id}(id=${ch.id})}" class="btn btn-success">Cập nhật</a>
+                            <form th:action="@{/admin/chapters/delete/{id}(id=${ch.id})}" method="post"
                                   onsubmit="return confirm('Bạn chắc chắn muốn xóa chương này?');">
                                 <button type="submit" class="btn btn-danger">Xóa</button>
                             </form>
@@ -63,18 +63,18 @@
             <nav aria-label="Page navigation">
                 <ul class="pagination">
                     <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
-                        <a class="page-link" th:href="@{/chapters(page=${currentPage - 1})}">Trước</a>
+                        <a class="page-link" th:href="@{/admin/chapters(page=${currentPage - 1})}">Trước</a>
                     </li>
 
                     <li class="page-item"
                         th:each="i : ${#numbers.sequence(1, totalPages)}"
                         th:classappend="${i == currentPage} ? 'active'">
-                        <a class="page-link" th:href="@{/chapters(page=${i})}"
+                        <a class="page-link" th:href="@{/admin/chapters(page=${i})}"
                            th:text="${i}"></a>
                     </li>
 
                     <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
-                        <a class="page-link" th:href="@{/chapters(page=${currentPage + 1})}">Sau</a>
+                        <a class="page-link" th:href="@{/admin/chapters(page=${currentPage + 1})}">Sau</a>
                     </li>
                 </ul>
             </nav>
