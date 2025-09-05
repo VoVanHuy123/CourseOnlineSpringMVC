@@ -35,7 +35,7 @@ public class LessonProgressController {
     @Autowired
     private UserServices userServices;
 
-    @GetMapping("/lesson-progress")
+    @GetMapping("/admin/lesson-progress")
     public String list(Model model, @RequestParam Map<String, String> params) {
         model.addAttribute("lessonProgresses", this.lessonProgressServices.getLessonProgresses(params));
 
@@ -57,7 +57,7 @@ public class LessonProgressController {
         return "lesson-progress"; 
     }
 
-    @GetMapping("/lesson-progress/create")
+    @GetMapping("/admin/lesson-progress/create")
     public String create(Model model) {
         model.addAttribute("lessonProgress", new LessonProgressDTO());
         model.addAttribute("lessons", this.lessonServices.getLessons(null)); 
@@ -65,7 +65,7 @@ public class LessonProgressController {
         return "lesson-progress-details";
     }
 
-    @GetMapping("/lesson-progress/{lpId}")
+    @GetMapping("/admin/lesson-progress/{lpId}")
     public String update(Model model, @PathVariable(value = "lpId") int id) {
         model.addAttribute("lessonProgress", this.lessonProgressServices.getLessonProgressById(id));
         model.addAttribute("lessons", this.lessonServices.getLessons(null)); 
@@ -73,7 +73,7 @@ public class LessonProgressController {
         return "lesson-progress-details";
     }
 
-    @PostMapping("/lesson-progress")
+    @PostMapping("/admin/lesson-progress")
     public String createOrUpdate(
             @ModelAttribute("lessonProgress") @Valid LessonProgressDTO lpDTO,
             BindingResult result,
@@ -87,12 +87,12 @@ public class LessonProgressController {
 
         this.lessonProgressServices.addOrUpdate(lpDTO);
 
-        return "redirect:/lesson-progress";
+        return "redirect:/admin/lesson-progress";
     }
 
-    @PostMapping("/lesson-progress/delete/{lpId}")
+    @PostMapping("/admin/lesson-progress/delete/{lpId}")
     public String delete(@PathVariable("lpId") int id) {
         this.lessonProgressServices.delete(id);
-        return "redirect:/lesson-progress";
+        return "redirect:/admin/lesson-progress";
     }
 }

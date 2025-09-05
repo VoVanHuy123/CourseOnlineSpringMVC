@@ -7,7 +7,7 @@
     <div th:replace="base :: menu"></div>
 
     <main class="container">
-        <form th:action="@{/payments}">
+        <form th:action="@{/admin/payments}">
             <div class="row mb-3 mt-3">
                 <div class="col-6">
                     <select class="form-select" name="method">
@@ -34,7 +34,7 @@
         </form>
 
         <div class="mt-2 mb-2">
-            <a th:href="@{/payments/create}" class="btn btn-info">Thêm payment</a>
+            <a th:href="@{/admin/payments/create}" class="btn btn-info">Thêm payment</a>
         </div>
 
         <table class="table table-striped">
@@ -69,8 +69,8 @@
                 <td th:text="${p.enrollmentId}"></td>
                 <td>
                     <div class="d-flex gap-2">
-                        <a th:href="@{/payments/{id}(id=${p.id})}" class="btn btn-success">Cập nhật</a>
-                        <form th:action="@{/payments/delete/{id}(id=${p.id})}" method="post"
+                        <a th:href="@{/admin/payments/{id}(id=${p.id})}" class="btn btn-success">Cập nhật</a>
+                        <form th:action="@{/admin/payments/delete/{id}(id=${p.id})}" method="post"
                               onsubmit="return confirm('Bạn chắc chắn muốn xóa payment này?');">
                             <button type="submit" class="btn btn-danger">Xóa</button>
                         </form>
@@ -87,7 +87,7 @@
                 <ul class="pagination">                   
                     <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
                         <a class="page-link"
-                           th:href="@{/payments((page=${currentPage > 1 ? currentPage - 1 : 1})}">
+                           th:href="@{/admin/payments((page=${currentPage > 1 ? currentPage - 1 : 1})}">
                             Trước
                         </a>
                     </li>
@@ -95,12 +95,12 @@
                     <li class="page-item"
                         th:each="i : ${#numbers.sequence(1, totalPages)}"
                         th:classappend="${i == currentPage} ? 'active'">
-                        <a class="page-link" th:href="@{/payments((page=${i})}" th:text="${i}"></a>
+                        <a class="page-link" th:href="@{/admin/payments((page=${i})}" th:text="${i}"></a>
                     </li>
                   
                     <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
                         <a class="page-link"
-                           th:href="@{/payments((page=${currentPage < totalPages ? currentPage + 1 : totalPages})}">
+                           th:href="@{/admin/payments((page=${currentPage < totalPages ? currentPage + 1 : totalPages})}">
                             Sau
                         </a>
                     </li>

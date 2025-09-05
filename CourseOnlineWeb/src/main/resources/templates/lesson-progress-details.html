@@ -10,7 +10,7 @@
         <h1 class="text-center text-info mt-2"
             th:text="${lessonProgress.id == null} ? 'THÊM TIẾN ĐỘ' : 'CẬP NHẬT TIẾN ĐỘ'"></h1>
 
-        <form method="post" th:object="${lessonProgress}" th:action="@{/lesson-progress}">
+        <form method="post" th:object="${lessonProgress}" th:action="@{/admin/lesson-progress}">
             <!-- Lesson Id (select) -->
             <div class="form-floating mb-3 mt-3">
                 <select class="form-select" id="lessonId" th:field="*{lessonId}">

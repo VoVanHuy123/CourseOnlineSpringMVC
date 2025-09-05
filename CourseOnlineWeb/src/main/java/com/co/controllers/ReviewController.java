@@ -30,7 +30,7 @@ public class ReviewController {
     @Autowired
     private UserServices userServices;
 
-    @GetMapping("/reviews")
+    @GetMapping("/admin/reviews")
     public String list(Model model, @RequestParam Map<String, String> params) {
         model.addAttribute("reviews", this.reviewServices.getReviews(params));
 
@@ -50,7 +50,7 @@ public class ReviewController {
         return "reviews";
     }
 
-    @GetMapping("/reviews/create")
+    @GetMapping("/admin/reviews/create")
     public String create(Model model) {
         model.addAttribute("review", new ReviewDTO());
         model.addAttribute("courses", courseServices.getCourses(null));
@@ -58,7 +58,7 @@ public class ReviewController {
         return "review-details";
     }
 
-    @GetMapping("/reviews/{reviewId}")
+    @GetMapping("/admin/reviews/{reviewId}")
     public String update(Model model, @PathVariable(value = "reviewId") int id) {
         model.addAttribute("review", this.reviewServices.getReviewById(id));
         model.addAttribute("courses", courseServices.getCourses(null));
@@ -66,7 +66,7 @@ public class ReviewController {
         return "review-details";
     }
 
-    @PostMapping("/reviews")
+    @PostMapping("/admin/reviews")
     public String save(
             @ModelAttribute("review") @Valid ReviewDTO reviewDTO,
             BindingResult result,
@@ -78,12 +78,12 @@ public class ReviewController {
 
         this.reviewServices.addOrUpdate(reviewDTO);
 
-        return "redirect:/reviews";
+        return "redirect:/admin/reviews";
     }
 
-    @PostMapping("/reviews/delete/{reviewId}")
+    @PostMapping("/admin/reviews/delete/{reviewId}")
     public String delete(@PathVariable("reviewId") int id) {
         this.reviewServices.delete(id);
-        return "redirect:/reviews";
+        return "redirect:/admin/reviews";
     } 
 }

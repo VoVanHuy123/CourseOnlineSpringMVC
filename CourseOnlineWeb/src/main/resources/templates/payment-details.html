@@ -10,7 +10,7 @@
         <h1 class="text-center text-info mt-2"
             th:text="${payment.id == null} ? 'THÊM PAYMENT' : 'CẬP NHẬT PAYMENT'"></h1>
 
-        <form method="post" th:object="${payment}" th:action="@{/payments}">
+        <form method="post" th:object="${payment}" th:action="@{/admin/payments}">
             <!-- ID hidden -->
             <input type="hidden" th:field="*{id}"/>
 
@@ -65,7 +65,7 @@
             <div class="form-floating mb-3 mt-3">
                 <button class="btn btn-success" th:if="${payment.id == null}">Thêm payment</button>
                 <button class="btn btn-success" th:unless="${payment.id == null}">Cập nhật payment</button>
-                <a th:href="@{/payments}" class="btn btn-secondary">Quay lại</a>
+                <a th:href="@{/admin/payments}" class="btn btn-secondary">Quay lại</a>
             </div>
         </form>
     </main>

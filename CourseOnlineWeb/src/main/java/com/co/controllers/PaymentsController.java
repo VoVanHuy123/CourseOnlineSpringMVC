@@ -23,7 +23,7 @@ public class PaymentsController {
     @Autowired
     private PaymentsServices paymentsServices;
 
-    @GetMapping("/payments")
+    @GetMapping("/admin/payments")
     public String list(Model model, @RequestParam Map<String, String> params) {
         model.addAttribute("payments", paymentsServices.getPayments(params));
 
@@ -40,31 +40,31 @@ public class PaymentsController {
         return "payments";
     }
 
-    @GetMapping("/payments/create")
+    @GetMapping("/admin/payments/create")
     public String createForm(Model model) {
         model.addAttribute("payment", new PaymentsDTO());
         return "payment-details";
     }
 
-    @GetMapping("/payments/{id}")
+    @GetMapping("/admin/payments/{id}")
     public String editForm(Model model, @PathVariable("id") int id) {
         model.addAttribute("payment", paymentsServices.getPaymentById(id));
         return "payment-details";
     }
 
-    @PostMapping("/payments")
+    @PostMapping("/admin/payments")
     public String createOrUpdate(@ModelAttribute("payment") @Valid PaymentsDTO dto,
                                  BindingResult result) {
         if (result.hasErrors()) {
             return "payment-details";
         }
         paymentsServices.addOrUpdate(dto);
-        return "redirect:/payments";
+        return "redirect:/admin/payments";
     }
 
-    @PostMapping("/payments/delete/{id}")
+    @PostMapping("/admin/payments/delete/{id}")
     public String delete(@PathVariable("id") int id) {
         paymentsServices.delete(id);
-        return "redirect:/payments";
+        return "redirect:/admin/payments";
     }
 }

@@ -12,7 +12,7 @@
             <h2 class="mt-3">Danh sách QnA</h2>
 
             
-            <form th:action="@{/qnas}" method="get">
+            <form th:action="@{/admin/qnas}" method="get">
                 <div class="mb-3 mt-3">
                     <input type="text" class="form-control" placeholder="Tìm theo nội dung" name="kw">
                 </div>
@@ -23,7 +23,7 @@
 
             <!-- Nút thêm mới -->
             <div class="mt-2 mb-2">
-                <a th:href="@{/qnas/create}" class="btn btn-success">Thêm QnA</a>
+                <a th:href="@{/admin/qnas/create}" class="btn btn-success">Thêm QnA</a>
             </div>
 
             <!-- Bảng danh sách -->
@@ -44,8 +44,8 @@
                         <td th:text="${q.userId.username}"></td>
                         <td th:text="${q.lessonId.title}"></td>
                         <td>
-                            <a th:href="@{/qnas/{id}(id=${q.id})}" class="btn btn-success btn-sm">Cập nhật</a>
-                            <a th:href="@{/qnas/delete/{id}(id=${q.id})}" 
+                            <a th:href="@{/admin/qnas/{id}(id=${q.id})}" class="btn btn-success btn-sm">Cập nhật</a>
+                            <a th:href="@{/admin/qnas/delete/{id}(id=${q.id})}" 
                                class="btn btn-danger btn-sm"
                                onclick="return confirm('Bạn có chắc muốn xóa QnA này?')">Xóa</a>
                         </td>
@@ -59,18 +59,18 @@
                     <ul class="pagination justify-content-center">
                      
                         <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
-                            <a class="page-link" th:href="@{/qnas(page=${currentPage - 1}, kw=${param.kw})}">Trước</a>
+                            <a class="page-link" th:href="@{/admin/qnas(page=${currentPage - 1}, kw=${param.kw})}">Trước</a>
                         </li>
 
                         <li class="page-item"
                             th:each="i : ${#numbers.sequence(1, totalPages)}"
                             th:classappend="${i == currentPage} ? 'active'">
-                            <a class="page-link" th:href="@{/qnas(page=${i}, kw=${param.kw})}"
+                            <a class="page-link" th:href="@{/admin/qnas(page=${i}, kw=${param.kw})}"
                                th:text="${i}"></a>
                         </li>
 
                         <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
-                            <a class="page-link" th:href="@{/qnas(page=${currentPage + 1}, kw=${param.kw})}">Sau</a>
+                            <a class="page-link" th:href="@{/admin/qnas(page=${currentPage + 1}, kw=${param.kw})}">Sau</a>
                         </li>
                     </ul>
                 </nav>
