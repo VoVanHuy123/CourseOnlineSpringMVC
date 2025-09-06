@@ -5,11 +5,13 @@
 package com.co.services.impl;
 
 import com.co.dtos.ChapterDTO;
+import com.co.dtos.LessonNameDTO;
 import com.co.pojo.Chapter;
 import com.co.pojo.Course;
 import com.co.repositories.ChapterRepository;
 import com.co.repositories.CourseRepository;
 import com.co.services.ChapterServices;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -31,10 +33,19 @@ public class ChapterSevevicesImpl implements ChapterServices {
 
 //    @Override
     public List<ChapterDTO> getChapters(Map<String, String> params) {
+//        List<Chapter> chapters = this.chapterRepo.getChapters(params);
+//        return chapters.stream()
+//                .map(ChapterDTO::new) // gọi constructor để convert
+//                .toList();
         List<Chapter> chapters = this.chapterRepo.getChapters(params);
-        return chapters.stream()
-                .map(ChapterDTO::new) // gọi constructor để convert
-                .toList();
+        List<Integer> chapterIds = chapters.stream().map(Chapter::getId).toList();
+        Map<Integer, List<LessonNameDTO>> lessonMap = this.chapterRepo.getLessonsForChapters(chapterIds);
+        List<ChapterDTO> dtoList = chapters.stream().map(c -> {
+            ChapterDTO dto = new ChapterDTO(c);
+                dto.setLessons(lessonMap.getOrDefault(c.getId(), Collections.emptyList()));
+                return dto;
+            }).toList();
+        return dtoList;
     }
 
     @Override
@@ -62,7 +73,7 @@ public class ChapterSevevicesImpl implements ChapterServices {
             }
         }
         if (chapterDto.getCourseId() != null) {
-            Course course = courseRepo.getCourseById(chapterDto.getCourseId(),false);
+            Course course = courseRepo.getCourseById(chapterDto.getCourseId(), false);
             if (course == null) {
                 throw new RuntimeException("không tìm thấy Course");
             }
@@ -95,7 +106,5 @@ public class ChapterSevevicesImpl implements ChapterServices {
     public long countChapters(Map<String, String> params) {
         return this.chapterRepo.countChapters(params);
     }
-
-    
 
 }

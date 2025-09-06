@@ -48,7 +48,7 @@ public class JWTFilter extends OncePerRequestFilter {
 //            return;
 //        }
 
-//        if (path.startsWith(String.format("%s/api/secure", request.getContextPath())) == true) {
+        if (path.startsWith(String.format("%s/api/secure", request.getContextPath())) == true) {
             String authHeader = request.getHeader("Authorization");
 
             if (authHeader != null && authHeader.startsWith("Bearer ")) {
@@ -74,7 +74,7 @@ public class JWTFilter extends OncePerRequestFilter {
 
             }
 
-//        }
+        }
 
         chain.doFilter(request, response);
     }
