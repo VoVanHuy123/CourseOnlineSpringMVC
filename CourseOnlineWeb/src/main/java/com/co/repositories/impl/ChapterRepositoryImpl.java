@@ -4,15 +4,19 @@
  */
 package com.co.repositories.impl;
 
+import com.co.dtos.LessonNameDTO;
 import com.co.pojo.Chapter;
+import com.co.pojo.Lesson;
 import com.co.repositories.ChapterRepository;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,6 +87,27 @@ public class ChapterRepositoryImpl implements ChapterRepository {
 
         return q.getResultList();
     }
+    
+    @Override
+    public Map<Integer, List<LessonNameDTO>> getLessonsForChapters(List<Integer> chapterIds) {
+        if (chapterIds.isEmpty()) return Collections.emptyMap();
+
+        Session s = this.factory.getObject().getCurrentSession();
+        CriteriaBuilder b = s.getCriteriaBuilder();
+        CriteriaQuery<Lesson> query = b.createQuery(Lesson.class);
+        Root<Lesson> root = query.from(Lesson.class);
+        query.select(root)
+             .where(root.get("chapterId").get("id").in(chapterIds));
+
+        List<Lesson> lessons = s.createQuery(query).getResultList();
+
+        // group lessons theo chapterId
+        return lessons.stream()
+                      .map(LessonNameDTO::new)
+                      .collect(Collectors.groupingBy(l -> l.getChapterId())); // cần thêm field chapterId vào LessonNameDTO hoặc map thủ công
+    }
+
+    
 
     @Override
     public Chapter getChapterById(int id) {
