@@ -4,6 +4,7 @@
  */
 package com.co.repositories;
 
+import com.co.dtos.LessonNameDTO;
 import com.co.pojo.Chapter;
 import java.util.List;
 import java.util.Map;
@@ -18,4 +19,5 @@ public interface ChapterRepository {
     public void addOrUpdate(Chapter chapter);
     public void delete(int id);
     public long countChapters(Map<String, String> params);
+    public Map<Integer, List<LessonNameDTO>> getLessonsForChapters(List<Integer> chapterIds);
 }

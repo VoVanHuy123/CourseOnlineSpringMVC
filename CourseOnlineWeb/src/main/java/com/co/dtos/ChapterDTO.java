@@ -30,7 +30,7 @@ public class ChapterDTO {
 
     // nếu cần trả về danh sách lessons
     
-    private List<LessonDTO> lessons;
+    private List<LessonNameDTO> lessons;
 
     public ChapterDTO() {}
     
@@ -45,6 +45,7 @@ public class ChapterDTO {
             this.courseId = chapter.getCourseId().getId();
         }
     }
+    
 
     public ChapterDTO(Integer id, String title, String description,
                       Integer orderIndex, Date createdAt, Date updatedAt,
@@ -116,10 +117,10 @@ public class ChapterDTO {
         this.courseTitle = courseTitle;
     }
 
-    public List<LessonDTO> getLessons() {
+    public List<LessonNameDTO> getLessons() {
         return lessons;
     }
-    public void setLessons(List<LessonDTO> lessons) {
+    public void setLessons(List<LessonNameDTO> lessons) {
         this.lessons = lessons;
     }
 }
