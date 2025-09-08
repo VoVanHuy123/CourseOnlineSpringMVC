@@ -7,6 +7,7 @@ package com.co.repositories;
 import com.co.pojo.LessonProgress;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  *
@@ -18,4 +19,6 @@ public interface LessonProgressRepository {
     public void addOrUpdate(LessonProgress lp);
     public void delete(int id);
     public long countLessonProgress(Map<String, String> params);
+    public void markComplete(int userId, int lessonId);
+    public Set<Integer> findCompletedLessonIds(int userId);
 }

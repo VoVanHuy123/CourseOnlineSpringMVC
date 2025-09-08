@@ -41,9 +41,9 @@ public class CourseDTO {
     @NotBlank(message = "Mô tả không được để trống")
     private String description;
 
-    @NotNull(message = "Học phí không được bỏ trống")
-    @DecimalMin(value = "0.0", message = "Học phí phải >= 0")
-    private BigDecimal tuitionFee;
+//    @NotNull(message = "Học phí không được bỏ trống")
+//    @DecimalMin(value = "0.0", message = "Học phí phải >= 0")
+    private BigDecimal tuitionFee = BigDecimal.ZERO;
     
     private String imageUrl;
     private String introVideoUrl;

@@ -14,6 +14,7 @@ import com.co.services.LessonProgressServices;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -66,5 +67,15 @@ public class LessonProgressServicesImpl implements LessonProgressServices{
     @Override
     public long countLessonProgress(Map<String, String> params) {
         return lpRepo.countLessonProgress(params);
+    }
+
+    @Override
+    public void markComplete(int userId, int lessonId) {
+        this.lpRepo.markComplete(userId, lessonId);
+    }
+
+    @Override
+    public Set<Integer> findCompletedLessonIds(int userId) {
+        return this.lpRepo.findCompletedLessonIds(userId);
     }
 }
