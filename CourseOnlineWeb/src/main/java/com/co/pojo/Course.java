@@ -67,7 +67,7 @@ public class Course implements Serializable {
     @Column(name = "duration")
     private BigDecimal duration;
     @Column(name = "lessons_count")
-    private Integer lessonsCount;
+    private Integer lessonsCount = 0;
     @Column(name = "public")
     private Boolean public1;
     @Column(name = "created_at")

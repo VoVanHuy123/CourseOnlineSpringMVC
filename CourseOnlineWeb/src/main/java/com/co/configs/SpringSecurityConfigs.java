@@ -13,8 +13,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -36,6 +38,7 @@ import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 @Configuration
 @EnableTransactionManagement
 @EnableWebSecurity
+@EnableMethodSecurity(prePostEnabled = true, proxyTargetClass = true)
 @ComponentScan(basePackages = {
     "com.co.controllers",
     "com.co.repositories",
@@ -71,6 +74,11 @@ public class SpringSecurityConfigs {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/login", "/api/auth/register","/api/courses","/api/courses/**", "/api/public/**").permitAll()
                 .requestMatchers("/api/secure/auth/profile").authenticated()
+                .requestMatchers(HttpMethod.GET, "/api/secure/courses/**", "/api/secure/chapters/**", "/api/secure/lessons/**")
+        .authenticated()   
+                .requestMatchers("/api/secure/courses","/api/secure/chapters","/api/secure/lessons").access(CustomAuthorizationManager.verifiedTeacher())
+                    
+                    
                 .anyRequest().authenticated()
             )
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

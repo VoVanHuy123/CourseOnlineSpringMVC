@@ -99,6 +99,8 @@ public class ChapterSevevicesImpl implements ChapterServices {
         dto.setDescription(chapter.getDescription());
         dto.setCourseId(chapter.getCourseId().getId());
         dto.setOrderIndex(chapter.getOrderIndex());
+        dto.setCreatedAt(chapter.getCreatedAt());
+        dto.setUpdatedAt(chapter.getUpdatedAt());
         return dto;
     }
 

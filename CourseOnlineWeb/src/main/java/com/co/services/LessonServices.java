@@ -5,6 +5,7 @@
 package com.co.services;
 
 import com.co.dtos.LessonDTO;
+import com.co.dtos.LessonWithStatusDTO;
 import java.util.List;
 import java.util.Map;
 
@@ -18,4 +19,5 @@ public interface LessonServices {
     public void addOrUpdate(LessonDTO chapterDto);
     public void delete(int id);
     public long countLessons(Map<String, String> params);
+    public List<LessonWithStatusDTO> getLessonsWithStatus(Integer courseId, Integer userId);
 }

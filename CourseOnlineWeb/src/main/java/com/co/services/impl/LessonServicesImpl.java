@@ -7,15 +7,22 @@ package com.co.services.impl;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import com.co.dtos.LessonDTO;
+import com.co.dtos.LessonWithStatusDTO;
 import com.co.pojo.Chapter;
+import com.co.pojo.Course;
 import com.co.pojo.Lesson;
 import com.co.repositories.ChapterRepository;
+import com.co.repositories.CourseRepository;
 import com.co.repositories.LessonRepository;
+import com.co.services.LessonProgressServices;
 import com.co.services.LessonServices;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +38,10 @@ public class LessonServicesImpl implements LessonServices{
     private LessonRepository lessonRepo;
     @Autowired
     private ChapterRepository chapterRepo;
+    @Autowired
+    private  CourseRepository courseRepository;
+    @Autowired
+    private LessonProgressServices lpServices;
     @Autowired
     private Cloudinary cloudinary;
     @Override
@@ -71,6 +82,15 @@ public class LessonServicesImpl implements LessonServices{
                 throw new RuntimeException("không tìm thấy chapter");
             }
             l.setChapterId(chapter);
+            
+            Course course = this.courseRepository.getCourseById(chapter.getCourseId().getId(), false);
+            if(course.getLessonsCount() != null) {
+                course.setLessonsCount(course.getLessonsCount() + 1);
+            }else{
+                course.setLessonsCount(1);
+            }
+            
+            this.courseRepository.addOrUpdate(course);
         }
         
          // Upload ảnh lên Cloudinary (nếu có)
@@ -115,7 +135,34 @@ public class LessonServicesImpl implements LessonServices{
         dto.setLessonOrder(lesson.getLessonOrder());
         dto.setCreatedAt(lesson.getCreatedAt());
         dto.setVideoUrl(lesson.getVideoUrl());
+        dto.setIsPublic(lesson.getPublic1());
         return dto;
+    }
+
+    @Override
+    public List<LessonWithStatusDTO> getLessonsWithStatus(Integer courseId, Integer userId) {
+        Map<String,String> params = new HashMap<>();
+        params.put("courseId", String.valueOf(courseId));
+        List<Lesson> lessons = this.lessonRepo.getLessons(params);
+        // Lấy danh sách lessonId mà user đã hoàn thành
+        Set<Integer> completedLessonIds = this.lpServices.findCompletedLessonIds(userId);
+        List<LessonWithStatusDTO> result = new ArrayList<>();
+    for (Lesson lesson : lessons) {
+        LessonWithStatusDTO dto = new LessonWithStatusDTO(lesson);
+
+        dto.setIsCompleted(completedLessonIds.contains(lesson.getId()));
+
+        // Rule tuần tự: khóa nếu bài trước chưa hoàn thành
+        if (lesson.getLessonOrder() > 1) {
+            boolean prevCompleted = completedLessonIds.contains(lesson.getLessonOrder() - 1);
+            dto.setIsLocked(!prevCompleted);
+        } else {
+            dto.setIsLocked(false); // bài đầu tiên luôn mở
+        }
+
+        result.add(dto);
+    }
+    return result;
     }
     
     

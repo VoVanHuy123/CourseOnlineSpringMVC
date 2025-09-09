@@ -4,6 +4,7 @@
  */
 package com.co.services.impl;
 
+import com.co.dtos.CourseDTO;
 import com.co.dtos.EnrollmentDTO;
 import com.co.pojo.Course;
 import com.co.pojo.Enrollment;
@@ -92,5 +93,13 @@ public class EnrollmentServicesImpl implements  EnrollmentServices{
     @Override
     public long countEnrollments(Map<String, String> params) {
         return this.enrollmentRepo.countEnrollments(params);
+    }
+
+    @Override
+    public List<CourseDTO> getCoursesByUserId(int id, Map<String,String> params) {
+        List<Course> courses = this.enrollmentRepo.getCoursesByUserId(id,params);
+        return  courses.stream()
+                .map(CourseDTO::new)
+                .toList();
     }
 }

@@ -54,6 +54,11 @@ public class LessonRepsitoryImpl implements  LessonRepository{
                 isPagination = false;
                 predicates.add(b.equal(root.get("chapterId").get("id"), Integer.valueOf(chapterId)));
             }
+            String courseId = params.get("courseId");
+            if (courseId != null && !courseId.isEmpty()) {
+                isPagination = false;
+                predicates.add(b.equal(root.get("chapterId").get("courseId").get("id"), Integer.valueOf(courseId)));
+            }
 
             query.where(predicates);
 

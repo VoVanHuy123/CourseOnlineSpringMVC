@@ -4,6 +4,7 @@
  */
 package com.co.repositories;
 
+import com.co.pojo.Course;
 import com.co.pojo.Enrollment;
 import java.util.List;
 import java.util.Map;
@@ -18,4 +19,5 @@ public interface EnrollmentRepository {
     public void addOrUpdate(Enrollment e) ;
     public void delete(int id) ;
     public long countEnrollments(Map<String, String> params) ;
+    public List<Course> getCoursesByUserId(int userId, Map<String, String> params);
 }
