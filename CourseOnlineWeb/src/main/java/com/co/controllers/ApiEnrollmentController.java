@@ -4,7 +4,9 @@
  */
 package com.co.controllers;
 
+import com.co.dtos.CourseDTO;
 import com.co.dtos.EnrollmentDTO;
+import com.co.pojo.Course;
 import com.co.services.EnrollmentServices;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -28,6 +31,7 @@ public class ApiEnrollmentController {
 
     @Autowired
     private EnrollmentServices enrollmentServices;
+    
 
     @GetMapping("/secure/check_enrollment")
     public ResponseEntity<?> check(@RequestParam Map<String, String> params) {
@@ -40,5 +44,10 @@ public class ApiEnrollmentController {
             // Không có enrollment
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Enrollment not found");
         }
+    }
+    @GetMapping("/secure/my-course/{userId}")
+    public ResponseEntity<List<CourseDTO>> getCoursesByUser(@PathVariable("userId") Integer userId,@RequestParam Map<String, String> params) {
+        List<CourseDTO> courses = this.enrollmentServices.getCoursesByUserId(userId, params);
+        return ResponseEntity.ok(courses);
     }
 }

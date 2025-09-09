@@ -47,10 +47,12 @@ public class CourseServicesImpl implements CourseServices {
     }
 
     @Override
-    public CourseDTO getCourseById(int id ,boolean includeChapters) {
-        Course c = this.courseRepo.getCourseById(id,true);
-        
-        if (c == null) return null;
+    public CourseDTO getCourseById(int id, boolean includeChapters) {
+        Course c = this.courseRepo.getCourseById(id, true);
+
+        if (c == null) {
+            return null;
+        }
 
         CourseDTO courseDto = new CourseDTO();
         courseDto.setId(c.getId());
@@ -63,8 +65,10 @@ public class CourseServicesImpl implements CourseServices {
         courseDto.setCreatedAt(c.getCreatedAt());
         courseDto.setTeacherId(c.getTeacherId().getId());
         courseDto.setTeacherName(c.getTeacherId().getFullName());
+        courseDto.setLessonsCount(c.getLessonsCount());
+        courseDto.setIntroVideoUrl(c.getIntroVideoUrl());
         // map thêm các field cần thiết
-       
+
         if (includeChapters && c.getChapterSet() != null) {
             List<ChapterDTO> chapters = c.getChapterSet().stream()
                     .map(ch -> new ChapterDTO(ch)) // bạn cần constructor trong ChapterDTO
@@ -82,28 +86,32 @@ public class CourseServicesImpl implements CourseServices {
             c = new Course();
             c.setCreatedAt(new Date());
             c.setPublic1(false);
+            c.setLessonsCount(0);
         } else {
-            c = courseRepo.getCourseById(dto.getId(),false);
+            c = courseRepo.getCourseById(dto.getId(), false);
             if (c == null) {
                 throw new IllegalArgumentException("Course không tồn tại!");
-            }else{
+            } else {
                 c.setPublic1(dto.getIsPublic());
-                
+
             }
         }
 
         // Áp dụng logic validate nâng cao ở đây
+        if (dto.getTuitionFee() == null) {
+            throw new IllegalArgumentException("Học phí không được bỏ trống");
+        }
         if (dto.getTuitionFee().compareTo(BigDecimal.valueOf(100000000)) > 0) {
             throw new IllegalArgumentException("Học phí không được vượt quá 100 triệu");
         }
-        
+
         User u = this.userRepo.getUserById(dto.getTeacherId());
         if (c == null) {
-                throw new IllegalArgumentException("Teacher không tồn tại!");
-        }else{
+            throw new IllegalArgumentException("Teacher không tồn tại!");
+        } else {
             c.setTeacherId(u);
         }
-                
+
         // Upload ảnh lên Cloudinary (nếu có)
         if (dto.getImageFile() != null && !dto.getImageFile().isEmpty()) {
             try {
@@ -131,7 +139,7 @@ public class CourseServicesImpl implements CourseServices {
         c.setTuitionFee(dto.getTuitionFee());
         c.setDuration(dto.getDuration());
         c.setLessonsCount(dto.getLessonsCount());
-        
+
         this.courseRepo.addOrUpdate(c);
     }
 

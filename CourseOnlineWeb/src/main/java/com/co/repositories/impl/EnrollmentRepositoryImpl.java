@@ -4,6 +4,7 @@
  */
 package com.co.repositories.impl;
 
+import com.co.pojo.Course;
 import com.co.pojo.Enrollment;
 import com.co.repositories.EnrollmentRepository;
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -26,8 +27,9 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Repository
 @Transactional
-public class EnrollmentRepositoryImpl implements EnrollmentRepository{
-     private static final int PAGE_SIZE = 8;
+public class EnrollmentRepositoryImpl implements EnrollmentRepository {
+
+    private static final int PAGE_SIZE = 8;
 
     @Autowired
     private LocalSessionFactoryBean factory;
@@ -57,20 +59,20 @@ public class EnrollmentRepositoryImpl implements EnrollmentRepository{
                 predicates.add(b.equal(root.get("courseId").get("id"), Integer.valueOf(courseId)));
                 isPagination = false;
             }
-            
+
             String name = params.get("name");
             if (name != null && !name.isEmpty()) {
                 Predicate firstNameLike = b.like(root.get("userId").get("firstName"), String.format("%%%s%%", name));
-                Predicate lastNameLike = b.like(root.get("userId").get("lastName"),String.format("%%%s%%", name));
+                Predicate lastNameLike = b.like(root.get("userId").get("lastName"), String.format("%%%s%%", name));
                 predicates.add(b.or(firstNameLike, lastNameLike));
             }
-            
+
             String courseTitle = params.get("courseTitle");
             if (courseTitle != null && !courseTitle.isEmpty()) {
                 Predicate courseTitleLike = b.like(root.get("courseId").get("title"), String.format("%%%s%%", courseTitle));
                 predicates.add(b.or(courseTitleLike));
             }
-            
+
             cq.where(predicates.toArray(new Predicate[0]));
 
             // Sắp xếp
@@ -146,4 +148,40 @@ public class EnrollmentRepositoryImpl implements EnrollmentRepository{
         cq.where(predicates.toArray(new Predicate[0]));
         return s.createQuery(cq).getSingleResult();
     }
+
+    @Override
+    public List<Course> getCoursesByUserId(int userId, Map<String, String> params) {
+        Session s = this.factory.getObject().getCurrentSession();
+        CriteriaBuilder b = s.getCriteriaBuilder();
+
+        // Truy vấn Course
+        CriteriaQuery<Course> cq = b.createQuery(Course.class);
+        Root<Enrollment> root = cq.from(Enrollment.class);
+
+        // SELECT e.courseId
+        cq.select(root.get("courseId"))
+                .where(b.equal(root.get("userId").get("id"), userId));
+
+        // Sắp xếp
+        String orderBy = params.get("orderBy");
+        if (orderBy != null && !orderBy.isEmpty()) {
+            cq.orderBy(b.desc(root.get("courseId").get(orderBy)));
+        }
+
+        Query<Course> q = s.createQuery(cq);
+
+        // Phân trang
+        if (params != null) {
+            String p = params.get("page");
+            if (p != null && !p.isEmpty()) {
+                int page = Integer.parseInt(p);
+                int start = (page - 1) * PAGE_SIZE;
+                q.setFirstResult(start);
+                q.setMaxResults(PAGE_SIZE);
+            }
+        }
+
+        return q.getResultList();
+    }
+
 }

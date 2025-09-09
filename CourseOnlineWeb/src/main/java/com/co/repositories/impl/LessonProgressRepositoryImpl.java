@@ -6,13 +6,18 @@ package com.co.repositories.impl;
 
 import com.co.pojo.LessonProgress;
 import com.co.repositories.LessonProgressRepository;
+import static jakarta.persistence.Timeout.s;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +31,8 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Repository
 @Transactional
-public class LessonProgressRepositoryImpl implements LessonProgressRepository{
+public class LessonProgressRepositoryImpl implements LessonProgressRepository {
+
     private static final int PAGE_SIZE = 8;
 
     @Autowired
@@ -81,17 +87,20 @@ public class LessonProgressRepositoryImpl implements LessonProgressRepository{
     @Override
     public void addOrUpdate(LessonProgress lp) {
         Session s = this.factory.getObject().getCurrentSession();
-        if (lp.getId() == null)
+        if (lp.getId() == null) {
             s.persist(lp);
-        else
+        } else {
             s.merge(lp);
+        }
     }
 
     @Override
     public void delete(int id) {
         Session s = this.factory.getObject().getCurrentSession();
         LessonProgress lp = getLessonProgressById(id);
-        if (lp != null) s.remove(lp);
+        if (lp != null) {
+            s.remove(lp);
+        }
     }
 
     @Override
@@ -112,5 +121,36 @@ public class LessonProgressRepositoryImpl implements LessonProgressRepository{
 
         cq.where(predicates.toArray(new Predicate[0]));
         return s.createQuery(cq).getSingleResult();
-    }  
+    }
+
+    @Override
+    public void markComplete(int userId, int lessonId) {
+        Session s = this.factory.getObject().getCurrentSession();
+        Map<String, String> params = new HashMap<>();
+        params.put("userId", String.valueOf(userId));
+        params.put("lessonId", String.valueOf(lessonId));
+
+        List<LessonProgress> results = this.getLessonProgresses(params);
+        LessonProgress lp;
+        if (!results.isEmpty()) {
+            // Đã có -> cập nhật
+            lp = results.get(0);
+            lp.setIsCompleted(true);
+            lp.setCompletedAt(new Date());
+            s.merge(lp);
+        }
+    }
+
+    @Override
+    public Set<Integer> findCompletedLessonIds(int userId) {
+        Map<String, String> params = new HashMap<>();
+        params.put("userId", String.valueOf(userId));
+        params.put("isCompleted", "true");  // chỉ lấy lesson đã hoàn thành
+
+        List<LessonProgress> results = this.getLessonProgresses(params);
+
+        return results.stream()
+                .map(lp -> lp.getLessonId().getId())
+                .collect(Collectors.toSet());
+    }
 }

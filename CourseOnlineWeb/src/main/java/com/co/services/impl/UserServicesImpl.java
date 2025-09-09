@@ -6,6 +6,7 @@ package com.co.services.impl;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
+import com.co.configs.CustomUserDetails;
 import com.co.dtos.UserDTO;
 import com.co.pojo.User;
 import com.co.repositories.UserRepository;
@@ -48,11 +49,7 @@ public class UserServicesImpl implements UserServices {
         if (u == null) {
             throw new UsernameNotFoundException("Invalid Username");
         }
-        Set<GrantedAuthority> authorities = new HashSet<>();
-        authorities.add(new SimpleGrantedAuthority(u.getRole()));
-
-        return new org.springframework.security.core.userdetails.User(
-                u.getUsername(), u.getPassword(), authorities);
+        return new CustomUserDetails(u);
     }
 
     @Override
@@ -110,6 +107,9 @@ public class UserServicesImpl implements UserServices {
                 u.setIsVerify(Boolean.TRUE);
             }
         }
+        if(user.getPassword() != null){
+            u.setPassword(user.getPassword());
+        }
         
         
         
@@ -119,7 +119,7 @@ public class UserServicesImpl implements UserServices {
         u.setRole(user.getRole());
         u.setFirstName(user.getFirstName());
         u.setLastName(user.getLastName());
-        u.setPassword(user.getPassword());
+        
         this.userRepo.addOrUpdate(u);
         
     }

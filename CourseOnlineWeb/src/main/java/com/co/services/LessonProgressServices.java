@@ -7,6 +7,7 @@ package com.co.services;
 import com.co.dtos.LessonProgressDTO;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  *
@@ -18,4 +19,6 @@ public interface LessonProgressServices {
     public void addOrUpdate(LessonProgressDTO dto);
     public void delete(int id);
     public long countLessonProgress(Map<String, String> params);  
+    public void markComplete(int userId, int lessonId);
+    public Set<Integer>findCompletedLessonIds(int userId);
 }
