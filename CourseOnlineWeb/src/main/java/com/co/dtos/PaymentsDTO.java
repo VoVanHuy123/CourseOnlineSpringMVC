@@ -22,6 +22,8 @@ public class PaymentsDTO {
     private Date paidAt;
     private Integer enrollmentId;
 
+    
+
     public PaymentsDTO() {}
 
     public PaymentsDTO(Payments p) {
@@ -55,5 +57,5 @@ public class PaymentsDTO {
 
     public Integer getEnrollmentId() { return enrollmentId; }
     public void setEnrollmentId(Integer enrollmentId) { this.enrollmentId = enrollmentId; }
-    
+        
 }

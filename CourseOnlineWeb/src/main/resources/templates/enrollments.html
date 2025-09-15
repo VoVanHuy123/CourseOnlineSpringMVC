@@ -36,6 +36,7 @@
                         <th>Ngày ghi danh</th>
                         <th>Khóa học</th>
                         <th>Người dùng</th>
+                        <th>Trạng thái</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -46,6 +47,12 @@
                         <td th:text="${#dates.format(e.enrolledAt, 'dd/MM/yyyy')}"></td>
                         <td th:text="${e.courseTitle}"></td>
                         <td th:text="${e.userFullName}"></td>
+                        <td>
+                            <span th:text="${e.status}"
+                                  th:classappend="${e.status == 'success'} ? 'badge bg-success' 
+                                                 : (${e.status == 'failed'} ? 'badge bg-danger' : 'badge bg-warning text-dark')">
+                            </span>
+                        </td>
                         <td>
                             <div class="d-flex gap-2">
                                 <a th:href="@{/admin/enrollments/{id}(id=${e.id})}" class="btn btn-success">Cập nhật</a>
