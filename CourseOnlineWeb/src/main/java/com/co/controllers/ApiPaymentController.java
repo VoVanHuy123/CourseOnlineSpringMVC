@@ -376,19 +376,34 @@ public class ApiPaymentController {
             if (payments.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Payment not found");
             }
-            PaymentsDTO payment = payments.get(0);
+         
+            // Lọc payment mới nhất theo ngày thanh toán hoặc ID
+            PaymentsDTO payment = payments.stream()
+                .max((p1, p2) -> {
+                    if (p1.getPaidAt() != null && p2.getPaidAt() != null) {
+                        return p1.getPaidAt().compareTo(p2.getPaidAt());
+                    }
+                    return p1.getId().compareTo(p2.getId());
+                })
+                .orElse(payments.get(0));
+            
+            
+            // Đảm bảo payment có ID để update
+            if (payment.getId() == null) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("Payment không có ID, không thể cập nhật");
+            }
+
 
             // Cập nhật trạng thái
-            if ("00".equals(responseCode)) {
-                payment.setStatus("success");
-                enrollment.setStatus("success");
-            } else {
-                payment.setStatus("failed");
-                enrollment.setStatus("failed");
-            }
+            String newStatus = "00".equals(responseCode) ? "success" : "failed";
+            payment.setStatus(newStatus);
+            enrollment.setStatus(newStatus);
 
             paymentsServices.addOrUpdate(payment);
             enrollmentServices.addOrUpdate(enrollment);
+            
+ 
 
             // Redirect về React course content
             String courseId = enrollment.getCourseId() != null ? enrollment.getCourseId().toString() : "";
