@@ -42,14 +42,17 @@ public class PaymentsServicesImpl implements  PaymentsServices{
         Payments p;
         if (dto.getId() != null) {
             p = paymentsRepo.getPaymentById(dto.getId());
+            if (p == null) {
+            throw new IllegalArgumentException("Payment ID=" + dto.getId() + " không tồn tại!");
+            }
         } else {
             p = new Payments();
             p.setPaidAt(new Date());
         }
-        p.setAmount(dto.getAmount());
-        p.setMethod(dto.getMethod());
-        p.setTransactionCode(dto.getTransactionCode());
-        p.setStatus(dto.getStatus());
+        if (dto.getAmount() != null) p.setAmount(dto.getAmount());
+        if (dto.getMethod() != null) p.setMethod(dto.getMethod());
+        if (dto.getTransactionCode() != null) p.setTransactionCode(dto.getTransactionCode());
+        if (dto.getStatus() != null) p.setStatus(dto.getStatus());
         if (dto.getEnrollmentId() != null) {
             Enrollment e = new Enrollment();
             e.setId(dto.getEnrollmentId());

@@ -7,7 +7,7 @@
     <div th:replace="base :: menu"></div>
 
     <main class="container">
-        <form th:action="@{/reviews}">
+        <form th:action="@{/admin/reviews}">
             <div class="row mb-3 mt-3">
                 <div class="col-6">
                     <input type="text" class="form-control" placeholder="Tìm theo comment" name="kw">
@@ -19,7 +19,7 @@
         </form>
 
         <div class="mt-2 mb-2">
-            <a th:href="@{/reviews/create}" class="btn btn-info">Thêm review</a>
+            <a th:href="@{/admin/reviews/create}" class="btn btn-info">Thêm review</a>
         </div>
 
         <table class="table table-striped">
@@ -46,8 +46,8 @@
                 <td th:text="${#dates.format(r.createdAt, 'dd/MM/yyyy')}"></td>
                 <td>
                     <div class="d-flex gap-2">
-                        <a th:href="@{/reviews/{id}(id=${r.id})}" class="btn btn-success">Cập nhật</a>
-                        <form th:action="@{/reviews/delete/{id}(id=${r.id})}" method="post"
+                        <a th:href="@{/admin/reviews/{id}(id=${r.id})}" class="btn btn-success">Cập nhật</a>
+                        <form th:action="@{/admin/reviews/delete/{id}(id=${r.id})}" method="post"
                               onsubmit="return confirm('Bạn chắc chắn muốn xóa review này?');">
                             <button type="submit" class="btn btn-danger">Xóa</button>
                         </form>
@@ -63,7 +63,7 @@
                 <ul class="pagination">                   
                     <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
                         <a class="page-link"
-                           th:href="@{/reviews((page=${currentPage > 1 ? currentPage - 1 : 1})}">
+                           th:href="@{/admin/reviews((page=${currentPage > 1 ? currentPage - 1 : 1})}">
                             Trước
                         </a>
                     </li>
@@ -71,12 +71,12 @@
                     <li class="page-item"
                         th:each="i : ${#numbers.sequence(1, totalPages)}"
                         th:classappend="${i == currentPage} ? 'active'">
-                        <a class="page-link" th:href="@{/reviews((page=${i})}" th:text="${i}"></a>
+                        <a class="page-link" th:href="@{/admin/reviews((page=${i})}" th:text="${i}"></a>
                     </li>
                   
                     <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
                         <a class="page-link"
-                           th:href="@{/reviews((page=${currentPage < totalPages ? currentPage + 1 : totalPages})}">
+                           th:href="@{/admin/reviews((page=${currentPage < totalPages ? currentPage + 1 : totalPages})}">
                             Sau
                         </a>
                     </li>

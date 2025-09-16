@@ -10,7 +10,7 @@
         <h1 class="text-center text-info mt-2">QUẢN LÝ TIẾN ĐỘ BÀI HỌC</h1>
 
         <!-- Form tìm kiếm -->
-        <form th:action="@{/lesson-progress}" method="get">
+        <form th:action="@{/admin/lesson-progress}" method="get">
             <div class="row mb-3 mt-3">
                 <div class="col-4">
                     <input type="number" class="form-control" placeholder="Tìm theo userId" name="userId"
@@ -34,7 +34,7 @@
         </form>
 
         <div class="mt-2 mb-2">
-            <a th:href="@{/lesson-progress/create}" class="btn btn-info">Thêm tiến độ</a>
+            <a th:href="@{/admin/lesson-progress/create}" class="btn btn-info">Thêm tiến độ</a>
         </div>
 
         <table class="table table-striped">
@@ -66,10 +66,10 @@
                 <td>
                     <div class="d-flex gap-2">
                         <!-- Link cập nhật -->
-                        <a th:href="@{/lesson-progress/{lpId}(lpId=${lp.id})}" class="btn btn-success">Cập nhật</a>
+                        <a th:href="@{/admin/lesson-progress/{lpId}(lpId=${lp.id})}" class="btn btn-success">Cập nhật</a>
 
                         <!-- Form xóa -->
-                        <form th:action="@{/lesson-progress/delete/{lpId}(lpId=${lp.id})}" method="post"
+                        <form th:action="@{/admin/lesson-progress/delete/{lpId}(lpId=${lp.id})}" method="post"
                               onsubmit="return confirm('Bạn chắc chắn muốn xóa tiến độ này?');">
                             <button type="submit" class="btn btn-danger">Xóa</button>
                         </form>
@@ -86,7 +86,7 @@
                     <!-- Nút trước -->
                     <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
                         <a class="page-link"
-                           th:href="@{/lesson-progress(page=${currentPage > 1 ? currentPage - 1 : 1})}">
+                           th:href="@{/admin/lesson-progress(page=${currentPage > 1 ? currentPage - 1 : 1})}">
                             Trước
                         </a>
                     </li>
@@ -95,13 +95,13 @@
                     <li class="page-item"
                         th:each="i : ${#numbers.sequence(1, totalPages)}"
                         th:classappend="${i == currentPage} ? 'active'">
-                        <a class="page-link" th:href="@{/lesson-progress(page=${i})}" th:text="${i}"></a>
+                        <a class="page-link" th:href="@{/admin/lesson-progress(page=${i})}" th:text="${i}"></a>
                     </li>
 
                     <!-- Nút sau -->
                     <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
                         <a class="page-link"
-                           th:href="@{/lesson-progress(page=${currentPage < totalPages ? currentPage + 1 : totalPages})}">
+                           th:href="@{/admin/lesson-progress(page=${currentPage < totalPages ? currentPage + 1 : totalPages})}">
                             Sau
                         </a>
                     </li>

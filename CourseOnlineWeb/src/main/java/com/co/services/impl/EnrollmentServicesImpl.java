@@ -58,6 +58,7 @@ public class EnrollmentServicesImpl implements  EnrollmentServices{
         if (dto.getId() == null) {
             e = new Enrollment();
             e.setEnrolledAt(new Date());
+            e.setStatus("pending");
         } else {
             e = this.enrollmentRepo.getEnrollmentById(dto.getId());
             if (e == null) {
@@ -80,6 +81,10 @@ public class EnrollmentServicesImpl implements  EnrollmentServices{
                 throw new IllegalArgumentException("User không tồn tại!");
             }
             e.setUserId(u);
+        }
+        
+        if (dto.getStatus() != null) {  
+            e.setStatus(dto.getStatus());
         }
 
         this.enrollmentRepo.addOrUpdate(e);
