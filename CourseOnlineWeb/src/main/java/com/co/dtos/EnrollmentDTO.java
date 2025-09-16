@@ -14,6 +14,7 @@ import java.util.Date;
 public class EnrollmentDTO {
     private Integer id;
     private Date enrolledAt;
+    private String status;
 
     // Chỉ giữ thông tin cơ bản về course
     private Integer courseId;
@@ -35,6 +36,7 @@ public class EnrollmentDTO {
     public EnrollmentDTO(Enrollment e){
         this.id = e.getId();
         this.enrolledAt = e.getEnrolledAt();
+        this.status = e.getStatus();
         this.courseId = e.getCourseId().getId();
         this.courseTitle = e.getCourseId().getTitle();
         this.userId = e.getUserId().getId();
@@ -63,6 +65,14 @@ public class EnrollmentDTO {
      */
     public void setEnrolledAt(Date enrolledAt) {
         this.enrolledAt = enrolledAt;
+    }
+    
+    public String getStatus() {
+        return status;
+    }
+    
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     /**

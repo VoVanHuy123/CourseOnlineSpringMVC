@@ -80,6 +80,7 @@ public class SpringSecurityConfigs {
         .authenticated()   
                 .requestMatchers("/api/secure/courses","/api/secure/chapters","/api/secure/lessons").access(CustomAuthorizationManager.verifiedTeacher())
                 .requestMatchers("/api/getcourse/**").permitAll()
+
                     
                 .anyRequest().authenticated()
             )

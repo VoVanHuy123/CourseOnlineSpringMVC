@@ -73,6 +73,11 @@ public class EnrollmentRepositoryImpl implements EnrollmentRepository {
                 Predicate courseTitleLike = b.like(root.get("courseId").get("title"), String.format("%%%s%%", courseTitle));
                 predicates.add(b.or(courseTitleLike));
             }
+            
+            String status = params.get("status");
+            if (status != null && !status.isEmpty()) {
+                predicates.add(b.equal(root.get("status"), status));
+            }
 
             cq.where(predicates.toArray(new Predicate[0]));
 

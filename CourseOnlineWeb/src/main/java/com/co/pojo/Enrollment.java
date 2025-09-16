@@ -33,6 +33,7 @@ import java.util.Set;
     @NamedQuery(name = "Enrollment.findAll", query = "SELECT e FROM Enrollment e"),
     @NamedQuery(name = "Enrollment.findById", query = "SELECT e FROM Enrollment e WHERE e.id = :id"),
     @NamedQuery(name = "Enrollment.findByEnrolledAt", query = "SELECT e FROM Enrollment e WHERE e.enrolledAt = :enrolledAt")})
+    @NamedQuery(name = "Enrollment.findByStatus", query = "SELECT e FROM Enrollment e WHERE e.status = :status")
 public class Enrollment implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -44,6 +45,8 @@ public class Enrollment implements Serializable {
     @Column(name = "enrolled_at")
     @Temporal(TemporalType.TIMESTAMP)
     private Date enrolledAt;
+    @Column(name = "status", nullable = false)
+    private String status;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "enrollmentId")
     private Set<Payments> paymentsSet;
     @JoinColumn(name = "course_id", referencedColumnName = "id")
@@ -74,6 +77,14 @@ public class Enrollment implements Serializable {
 
     public void setEnrolledAt(Date enrolledAt) {
         this.enrolledAt = enrolledAt;
+    }
+    
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public Set<Payments> getPaymentsSet() {

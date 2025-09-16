@@ -56,6 +56,18 @@
             <input type="text" class="form-control" id="userFullName" th:value="${enrollment.userFullName}" readonly>
             <label for="userFullName">Tên người dùng</label>
         </div>
+        
+        <!-- Chọn trạng thái -->
+        <div class="form-floating mb-3 mt-3">
+            <select class="form-select" id="status" th:field="*{status}">
+                <option value="pending" th:selected="${enrollment.status == 'pending'}">Pending</option>
+                <option value="success" th:selected="${enrollment.status == 'success'}">Success</option>
+                <option value="failed" th:selected="${enrollment.status == 'failed'}">Failed</option>
+            </select>
+            <label for="status">Trạng thái</label>
+            <div class="text-danger" th:if="${#fields.hasErrors('status')}" th:errors="*{status}"></div>
+        </div>
+
 
         <!-- Nút submit -->
         <div class="form-floating mb-3 mt-3">

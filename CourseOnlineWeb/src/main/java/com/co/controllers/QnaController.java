@@ -33,7 +33,7 @@ public class QnaController {
     @Autowired
     private LessonServices lessonServices;
 
-    @GetMapping("/qnas")
+    @GetMapping("/admin/qnas")
     public String list(Model model, @RequestParam Map<String, String> params) {
         int pageSize = 8;
 
@@ -54,7 +54,7 @@ public class QnaController {
         return "qna-list";
     }
 
-    @GetMapping("/qnas/create")
+    @GetMapping("/admin/qnas/create")
     public String createForm(Model model) {
         model.addAttribute("qna", new QnaDTO());
         model.addAttribute("users", userServices.getUsers(new HashMap<>()));
@@ -62,7 +62,7 @@ public class QnaController {
         return "qna-details"; 
     }
 
-    @GetMapping("/qnas/{id}")
+    @GetMapping("/admin/qnas/{id}")
     public String updateForm(Model model, @PathVariable(value = "id") int id) {
         model.addAttribute("qna", this.qnaServices.getQnaById(id));
         model.addAttribute("users", userServices.getUsers(new HashMap<>()));
@@ -70,7 +70,7 @@ public class QnaController {
         return "qna-details";  
     }
 
-    @PostMapping("/qnas")
+    @PostMapping("/admin/qnas")
     public String save(@ModelAttribute("qna") @Valid QnaDTO dto,
                        BindingResult result,
                        Model model) {
@@ -81,12 +81,12 @@ public class QnaController {
             return "qna-details";  
         }
         this.qnaServices.addOrUpdate(dto);
-        return "redirect:/qnas";  
+        return "redirect:/admin/qnas";  
     }
 
-    @GetMapping("/qnas/delete/{id}")
+    @GetMapping("/admin/qnas/delete/{id}")
     public String delete(@PathVariable(value = "id") int id) {
         this.qnaServices.delete(id);
-        return "redirect:/qnas";  
+        return "redirect:/admin/qnas";  
     }
 }
