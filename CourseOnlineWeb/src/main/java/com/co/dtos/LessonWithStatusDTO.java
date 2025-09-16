@@ -10,7 +10,7 @@ import com.co.pojo.Lesson;
  *
  * @author ACER
  */
-public class LessonWithStatusDTO extends LessonDTO{
+public class LessonWithStatusDTO extends LessonNameDTO{
      private boolean isCompleted;
     private boolean isLocked;
     public LessonWithStatusDTO(Lesson lesson) {

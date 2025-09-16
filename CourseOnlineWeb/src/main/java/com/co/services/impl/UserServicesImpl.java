@@ -24,6 +24,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 /**
@@ -37,6 +38,9 @@ public class UserServicesImpl implements UserServices {
     private Cloudinary cloudinary;
     @Autowired
     private UserRepository userRepo;
+    
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
 
     @Override
     public User getUserByUsername(String username) {
@@ -72,21 +76,27 @@ public class UserServicesImpl implements UserServices {
 
         if (user.getId() == null) {
             u = this.getUserByUsername(user.getUsername());
-            if( u != null){
+            if (u != null) {
                 throw new RuntimeException("❌ Tên đăng nhập đã được sử dụng!");
-            } else{
+            } else {
                 u = new User();
-            u.setCreatedAt(new Date());
+                u.setCreatedAt(new Date());
             }
-            
+
         } else {
             u = userRepo.getUserById(user.getId());
             if (u == null) {
                 throw new IllegalArgumentException("user không tồn tại!");
+            }else{
+                if (user.getPassword() != null && !user.getPassword().isBlank()) {
+                    
+                    u.setPassword(this.passwordEncoder.encode(user.getPassword()));
+                } 
             }
+            
         }
-        
-        if (user.getAvatarFile()!= null && !user.getAvatarFile().isEmpty()) {
+
+        if (user.getAvatarFile() != null && !user.getAvatarFile().isEmpty()) {
             try {
                 Map res = this.cloudinary.uploader().upload(user.getAvatarFile().getBytes(), ObjectUtils.asMap("resource_type", "auto"));
                 u.setAvatar((String) res.get("secure_url"));
@@ -95,33 +105,26 @@ public class UserServicesImpl implements UserServices {
             }
 
         }
-        
-        if(user.getIsVerify()!= null){
+
+        if (user.getIsVerify() != null) {
             u.setIsVerify(user.getIsVerify());
-        }
-        else{
-            if("teacher".equals(user.getRole())){
+        } else {
+            if ("teacher".equals(user.getRole())) {
                 u.setIsVerify(Boolean.FALSE);
-            }
-            else{
+            } else {
                 u.setIsVerify(Boolean.TRUE);
             }
         }
-        if(user.getPassword() != null){
-            u.setPassword(user.getPassword());
-        }
-        
-        
-        
+
         u.setEmail(user.getEmail());
         u.setPhoneNumber(user.getPhoneNumber());
         u.setUsername(user.getUsername());
         u.setRole(user.getRole());
         u.setFirstName(user.getFirstName());
         u.setLastName(user.getLastName());
-        
+
         this.userRepo.addOrUpdate(u);
-        
+
     }
 
     @Override
@@ -151,5 +154,3 @@ public class UserServicesImpl implements UserServices {
         return this.userRepo.authenticate(username, password);
     }
 }
-
-

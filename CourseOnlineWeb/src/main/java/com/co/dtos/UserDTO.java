@@ -5,6 +5,7 @@
 package com.co.dtos;
 
 import com.co.pojo.User;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Date;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,6 +25,7 @@ public class UserDTO {
     private Boolean isVerify;
     private Date createdAt;
     private MultipartFile avatarFile;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
     // Tùy chọn: hiển thị tên đầy đủ
     public String getFullName() {
@@ -42,6 +44,7 @@ public class UserDTO {
         this.phoneNumber = user.getPhoneNumber();
         this.role = user.getRole();
         this.isVerify = user.getIsVerify();
+        this.createdAt = user.getCreatedAt();
 //        this.createdAt = user.getFirstName();
     }
     

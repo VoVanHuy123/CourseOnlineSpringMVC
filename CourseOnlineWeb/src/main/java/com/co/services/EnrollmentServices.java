@@ -6,6 +6,7 @@ package com.co.services;
 
 import com.co.dtos.CourseDTO;
 import com.co.dtos.EnrollmentDTO;
+import com.co.dtos.UserDTO;
 import java.util.List;
 import java.util.Map;
 
@@ -20,4 +21,5 @@ public interface EnrollmentServices {
     public void delete(int id);
     public long countEnrollments(Map<String, String> params);
     public List<CourseDTO> getCoursesByUserId(int id,Map<String,String> params);
+    public List<UserDTO> getUsersByCourseId(int courseId, Map<String, String> params);
 }

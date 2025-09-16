@@ -75,7 +75,10 @@ public class LessonProgressServicesImpl implements LessonProgressServices{
     }
 
     @Override
-    public Set<Integer> findCompletedLessonIds(int userId) {
-        return this.lpRepo.findCompletedLessonIds(userId);
+    public Set<Integer> findCompletedLessonIds(int userId, int courseId) {
+        Set<Integer> lessonIds = this.lpRepo.findCompletedLessonIds(userId,courseId);
+    System.out.println("DEBUG - completed lessonIds for user " + userId + " = " + lessonIds);
+    return lessonIds;
+
     }
 }

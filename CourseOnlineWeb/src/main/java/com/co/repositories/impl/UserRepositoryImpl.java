@@ -127,10 +127,11 @@ public class UserRepositoryImpl implements UserRepository {
         Session s = this.factory.getObject().getCurrentSession();
 
         if (user.getId() != null) {
-            user.setPassword(this.passwordEncoder.encode(user.getPassword()));
+//            user.setPassword(this.passwordEncoder.encode(user.getPassword()));
             s.merge(user);
         } else {
             user.setPassword(this.passwordEncoder.encode(user.getPassword()));
+            
             s.persist(user);
         }
     }

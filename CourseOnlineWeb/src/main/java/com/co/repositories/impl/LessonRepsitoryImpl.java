@@ -12,6 +12,7 @@ import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.hibernate.Session;
@@ -58,6 +59,11 @@ public class LessonRepsitoryImpl implements  LessonRepository{
             if (courseId != null && !courseId.isEmpty()) {
                 isPagination = false;
                 predicates.add(b.equal(root.get("chapterId").get("courseId").get("id"), Integer.valueOf(courseId)));
+            }
+            String isPublic = params.get("isPublic");
+            if (isPublic != null && !isPublic.isEmpty()) {
+                isPagination = false;
+                predicates.add(b.equal(root.get("public1"), Boolean.valueOf(isPublic)));
             }
 
             query.where(predicates);
@@ -142,5 +148,15 @@ public class LessonRepsitoryImpl implements  LessonRepository{
 
         return s.createQuery(cq).getSingleResult();
     }
+    
+    @Override
+    public Long countByCourseIdAndPublic(int courseId, boolean isPublic) {
+    Map<String, String> params = new HashMap<>();
+    params.put("courseId", String.valueOf(courseId));
+    params.put("isPublic", String.valueOf(isPublic)); // thêm xử lý trong getLessons
+    
+    List<Lesson> lessons = this.getLessons(params);
+    return (long) lessons.size();
+}
     
 }

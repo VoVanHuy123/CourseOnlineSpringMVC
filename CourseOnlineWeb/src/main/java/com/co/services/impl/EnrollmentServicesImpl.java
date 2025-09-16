@@ -6,6 +6,7 @@ package com.co.services.impl;
 
 import com.co.dtos.CourseDTO;
 import com.co.dtos.EnrollmentDTO;
+import com.co.dtos.UserDTO;
 import com.co.pojo.Course;
 import com.co.pojo.Enrollment;
 import com.co.pojo.User;
@@ -105,6 +106,14 @@ public class EnrollmentServicesImpl implements  EnrollmentServices{
         List<Course> courses = this.enrollmentRepo.getCoursesByUserId(id,params);
         return  courses.stream()
                 .map(CourseDTO::new)
+                .toList();
+    }
+
+    @Override
+    public List<UserDTO> getUsersByCourseId(int courseId, Map<String, String> params) {
+        List<User> courses = this.enrollmentRepo.getUsersByCourseId(courseId,params);
+        return  courses.stream()
+                .map(UserDTO::new)
                 .toList();
     }
 }

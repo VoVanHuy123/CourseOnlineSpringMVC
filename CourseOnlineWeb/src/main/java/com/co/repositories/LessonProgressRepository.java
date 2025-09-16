@@ -20,5 +20,5 @@ public interface LessonProgressRepository {
     public void delete(int id);
     public long countLessonProgress(Map<String, String> params);
     public void markComplete(int userId, int lessonId);
-    public Set<Integer> findCompletedLessonIds(int userId);
+    public Set<Integer> findCompletedLessonIds(int userId,int courseId);
 }

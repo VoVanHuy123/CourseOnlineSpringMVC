@@ -72,14 +72,15 @@ public class SpringSecurityConfigs {
             .csrf(csrf -> csrf.disable())
             .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/login", "/api/auth/register","/api/courses","/api/courses/**", "/api/public/**", "/api/payments/vnpay/return").permitAll()
+                .requestMatchers("/api/auth/login", "/api/auth/register","/api/courses","/api/courses/**", "/api/public/**").permitAll()
+                .requestMatchers("/api/secure/stats/**").access(CustomAuthorizationManager.adminOnly())
                 .requestMatchers("/api/secure/auth/profile").authenticated()
-                .requestMatchers("/api/secure/payments/**").authenticated()
+                .requestMatchers("/api/secure/get_ussers_of_course").access(CustomAuthorizationManager.verifiedTeacher())
                 .requestMatchers(HttpMethod.GET, "/api/secure/courses/**", "/api/secure/chapters/**", "/api/secure/lessons/**")
         .authenticated()   
                 .requestMatchers("/api/secure/courses","/api/secure/chapters","/api/secure/lessons").access(CustomAuthorizationManager.verifiedTeacher())
-                
-                    
+                .requestMatchers("/api/getcourse/**").permitAll()
+
                     
                 .anyRequest().authenticated()
             )
