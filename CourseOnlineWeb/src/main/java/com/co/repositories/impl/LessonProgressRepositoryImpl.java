@@ -4,8 +4,12 @@
  */
 package com.co.repositories.impl;
 
+import com.co.pojo.Lesson;
 import com.co.pojo.LessonProgress;
+import com.co.pojo.User;
 import com.co.repositories.LessonProgressRepository;
+import com.co.repositories.LessonRepository;
+import com.co.repositories.UserRepository;
 import static jakarta.persistence.Timeout.s;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
@@ -37,6 +41,10 @@ public class LessonProgressRepositoryImpl implements LessonProgressRepository {
 
     @Autowired
     private LocalSessionFactoryBean factory;
+    @Autowired
+    private UserRepository userRepol;
+    @Autowired
+    private LessonRepository lessonRepository;
 
     @Override
     public List<LessonProgress> getLessonProgresses(Map<String, String> params) {
@@ -56,6 +64,10 @@ public class LessonProgressRepositoryImpl implements LessonProgressRepository {
             String lessonId = params.get("lessonId");
             if (lessonId != null && !lessonId.isEmpty()) {
                 predicates.add(b.equal(root.get("lessonId").get("id"), Integer.parseInt(lessonId)));
+            }
+            String courseId = params.get("courseId");
+            if (courseId != null && !courseId.isEmpty()) {
+                predicates.add(b.equal(root.get("lessonId").get("chapterId").get("courseId").get("id"), Integer.parseInt(courseId)));
             }
             String completed = params.get("isCompleted");
             if (completed != null && !completed.isEmpty()) {
@@ -138,13 +150,23 @@ public class LessonProgressRepositoryImpl implements LessonProgressRepository {
             lp.setIsCompleted(true);
             lp.setCompletedAt(new Date());
             s.merge(lp);
+        }else {
+            User user = this.userRepol.getUserById(userId);
+            Lesson lesson = this.lessonRepository.getLessonById(lessonId);
+            lp = new LessonProgress();
+            lp.setUserId(user);        // hoặc set User object nếu mapping ManyToOne
+            lp.setLessonId(lesson);    // hoặc set Lesson object
+            lp.setIsCompleted(true);
+            lp.setCompletedAt(new Date());
+            s.persist(lp);
         }
     }
 
     @Override
-    public Set<Integer> findCompletedLessonIds(int userId) {
+    public Set<Integer> findCompletedLessonIds(int userId , int courseId) {
         Map<String, String> params = new HashMap<>();
         params.put("userId", String.valueOf(userId));
+        params.put("courseId", String.valueOf(courseId));
         params.put("isCompleted", "true");  // chỉ lấy lesson đã hoàn thành
 
         List<LessonProgress> results = this.getLessonProgresses(params);

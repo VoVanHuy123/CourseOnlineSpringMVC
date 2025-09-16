@@ -8,6 +8,7 @@ import com.co.pojo.Course;
 import com.co.repositories.CourseRepository;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Expression;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import java.math.BigDecimal;
@@ -179,6 +180,27 @@ public class CourseRepositoryImpl implements CourseRepository {
         cq.where(predicates.toArray(new Predicate[0]));
 
         return s.createQuery(cq).getSingleResult();
+    }
+    
+    public List<Object[]> countPublicCoursesByMonth(Long teacherId) {
+        Session session = this.factory.getObject().getCurrentSession();
+
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaQuery<Object[]> cq = cb.createQuery(Object[].class);
+        Root<Course> root = cq.from(Course.class);
+
+        // Điều kiện lọc
+        Predicate isPublic = cb.isTrue(root.get("isPublic"));
+        Predicate teacherPredicate = cb.equal(root.get("teacher").get("id"), teacherId);
+        cq.where(cb.and(isPublic, teacherPredicate));
+
+        // Chọn month và count
+        Expression<Integer> monthExpr = cb.function("month", Integer.class, root.get("createdAt"));
+        cq.multiselect(monthExpr, cb.count(root));
+        cq.groupBy(monthExpr);
+
+        Query<Object[]> query = session.createQuery(cq);
+        return query.getResultList();
     }
 
 }

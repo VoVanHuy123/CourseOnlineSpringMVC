@@ -4,8 +4,16 @@
  */
 package com.co.controllers;
 
+import com.co.dtos.LessonProgressDTO;
 import com.co.dtos.LessonWithStatusDTO;
+import com.co.pojo.User;
+import com.co.services.LessonProgressServices;
+import com.co.services.LessonServices;
+import java.util.List;
+import java.util.Map;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,8 +29,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("/api")
 @CrossOrigin
 public class ApiLessonProgressController {
-//    @GetMapping("/course/getlessons")
-//    public ResponseEntity<List<LessonWithStatusDTO>> getlessons(@PathVariable){
-//        
-//    }
+    @Autowired
+    private LessonServices lessonServices;
+    @Autowired
+    private LessonProgressServices lpServices;
+    
+    @GetMapping("/secure/lesson_progress")
+    public ResponseEntity<List<LessonProgressDTO>> list(@RequestParam Map<String,String> params){
+        return ResponseEntity.ok(this.lpServices.getLessonProgresses(params));
+    }
+    
 }

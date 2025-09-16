@@ -7,6 +7,9 @@ package com.co.controllers;
 import com.co.configs.CustomUserDetails;
 import com.co.dtos.CourseDTO;
 import com.co.services.CourseServices;
+import com.co.services.LessonProgressServices;
+import com.co.services.LessonServices;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +42,10 @@ public class ApiCourseController {
 
     @Autowired
     private CourseServices courseServices;
+    @Autowired
+    private  LessonServices lessonServices;
+    @Autowired
+    private LessonProgressServices lpServices;
 
     @GetMapping("/courses")
     public ResponseEntity<List<CourseDTO>> list(@RequestParam Map<String, String> params) {
@@ -73,6 +80,18 @@ public class ApiCourseController {
     public ResponseEntity<?> delete(@PathVariable("id") Integer id){
         this.courseServices.delete(id);
         return ResponseEntity.noContent().build();
+    }
+    
+    @GetMapping("/secure/courses/{id}/get_progress")
+    public  ResponseEntity<?> getProgress(@PathVariable("id") Integer courseId , Authentication authentication){
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        int userId = userDetails.getId();
+        int totalLessons = this.courseServices.getCourseById(courseId, false).getLessonsCount();
+        int totalCompleteLessons = this.lpServices.findCompletedLessonIds(userId,courseId).size();
+        Map<String,String> body = new HashMap<>();
+        body.put("totalLessons", String.valueOf(totalLessons));
+        body.put("totalCompleteLessons", String.valueOf(totalCompleteLessons));
+        return ResponseEntity.ok(body);
     }
     
 }

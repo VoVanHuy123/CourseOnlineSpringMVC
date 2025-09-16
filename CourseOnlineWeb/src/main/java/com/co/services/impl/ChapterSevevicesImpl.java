@@ -42,7 +42,7 @@ public class ChapterSevevicesImpl implements ChapterServices {
         Map<Integer, List<LessonNameDTO>> lessonMap = this.chapterRepo.getLessonsForChapters(chapterIds);
         List<ChapterDTO> dtoList = chapters.stream().map(c -> {
             ChapterDTO dto = new ChapterDTO(c);
-                dto.setLessons(lessonMap.getOrDefault(c.getId(), Collections.emptyList()));
+//                dto.setLessons(lessonMap.getOrDefault(c.getId(), Collections.emptyList()));
                 return dto;
             }).toList();
         return dtoList;

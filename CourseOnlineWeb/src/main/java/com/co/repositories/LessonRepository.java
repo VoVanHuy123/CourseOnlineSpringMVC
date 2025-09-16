@@ -18,4 +18,6 @@ public interface LessonRepository {
     public void addOrUpdate(Lesson chapter);
     public void delete(int id);
     public long countLessons(Map<String, String> params);
+    public Long countByCourseIdAndPublic(int courseId, boolean isPublic);
+    
 }

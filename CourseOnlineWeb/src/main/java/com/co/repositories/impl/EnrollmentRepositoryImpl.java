@@ -6,6 +6,7 @@ package com.co.repositories.impl;
 
 import com.co.pojo.Course;
 import com.co.pojo.Enrollment;
+import com.co.pojo.User;
 import com.co.repositories.EnrollmentRepository;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
@@ -183,5 +184,40 @@ public class EnrollmentRepositoryImpl implements EnrollmentRepository {
 
         return q.getResultList();
     }
+    
+    @Override
+    public List<User> getUsersByCourseId(int courseId, Map<String, String> params) {
+        Session s = this.factory.getObject().getCurrentSession();
+        CriteriaBuilder b = s.getCriteriaBuilder();
+
+        // Truy vấn User
+        CriteriaQuery<User> cq = b.createQuery(User.class);
+        Root<Enrollment> root = cq.from(Enrollment.class);
+
+        // SELECT e.userId WHERE e.courseId = :courseId
+        cq.select(root.get("userId"))
+                .where(b.equal(root.get("courseId").get("id"), courseId));
+
+        // Sắp xếp
+        String orderBy = params.get("orderBy");
+        if (orderBy != null && !orderBy.isEmpty()) {
+            cq.orderBy(b.asc(root.get("userId").get(orderBy))); // hoặc desc tùy nhu cầu
+        }
+
+    Query<User> q = s.createQuery(cq);
+
+    // Phân trang
+    if (params != null) {
+        String p = params.get("page");
+        if (p != null && !p.isEmpty()) {
+            int page = Integer.parseInt(p);
+            int start = (page - 1) * PAGE_SIZE;
+            q.setFirstResult(start);
+            q.setMaxResults(PAGE_SIZE);
+        }
+    }
+
+    return q.getResultList();
+}
 
 }
