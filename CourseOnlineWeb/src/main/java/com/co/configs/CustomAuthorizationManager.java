@@ -1,38 +1,48 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.co.configs;
 
+import com.co.dtos.CourseDTO;
+import com.co.services.CourseServices;
+import java.util.function.Function;
 import java.util.function.Supplier;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.authorization.AuthorizationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.access.intercept.RequestAuthorizationContext;
+import org.springframework.stereotype.Component;
 
-/**
- *
- * @author ACER
- */
-public class CustomAuthorizationManager implements AuthorizationManager<RequestAuthorizationContext>{
+
+public class CustomAuthorizationManager implements AuthorizationManager<RequestAuthorizationContext> {
+
     private final String requiredRole;
     private final boolean mustBeVerified;
+    private final Function<RequestAuthorizationContext, Integer> ownerIdExtractor;
 
-    public CustomAuthorizationManager(String requiredRole, boolean mustBeVerified) {
+    @Autowired
+    private CourseServices courseServices; // Spring tự inject
+
+    // Constructor private để chỉ cho phép tạo qua factory method
+    private CustomAuthorizationManager(String requiredRole, boolean mustBeVerified,
+                                       Function<RequestAuthorizationContext, Integer> ownerIdExtractor) {
         this.requiredRole = requiredRole;
         this.mustBeVerified = mustBeVerified;
-    }
-    
-    public static CustomAuthorizationManager verifiedTeacher() {
-    return new CustomAuthorizationManager("teacher", true);
+        this.ownerIdExtractor = ownerIdExtractor;
     }
 
-    public static CustomAuthorizationManager verifiedStudent() {
-        return new CustomAuthorizationManager("student", true);
+    // ===== Factory methods =====
+    public static CustomAuthorizationManager verifiedTeacher() {
+        return new CustomAuthorizationManager("teacher", true, null);
+    }
+
+    public static CustomAuthorizationManager verifiedTeacherAndOwner() {
+        return new CustomAuthorizationManager("teacher", true, ctx -> {
+            String idStr = ctx.getVariables().get("id");
+            return idStr != null ? Integer.valueOf(idStr) : null;
+        });
     }
 
     public static CustomAuthorizationManager adminOnly() {
-        return new CustomAuthorizationManager("admin", false);
+        return new CustomAuthorizationManager("admin", false, null);
     }
 
     @Override
@@ -41,8 +51,21 @@ public class CustomAuthorizationManager implements AuthorizationManager<RequestA
         if (auth != null && auth.getPrincipal() instanceof CustomUserDetails user) {
             boolean hasRole = requiredRole.equalsIgnoreCase(user.getRole());
             boolean isVerified = !mustBeVerified || Boolean.TRUE.equals(user.isVerify());
-            return new AuthorizationDecision(hasRole && isVerified);
+
+            boolean isOwner = true;
+            if (ownerIdExtractor != null) {
+                Integer courseId = ownerIdExtractor.apply(context);
+                if (courseId != null) {
+                    CourseDTO courseDTO = courseServices.getCourseById(courseId, false);
+                    isOwner = courseDTO != null && courseDTO.getTeacherId() == user.getId();
+                } else {
+                    isOwner = false;
+                }
+            }
+
+            return new AuthorizationDecision(hasRole && isVerified && isOwner);
         }
         return new AuthorizationDecision(false);
     }
 }
+

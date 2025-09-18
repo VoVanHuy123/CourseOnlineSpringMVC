@@ -62,6 +62,23 @@ public class SpringSecurityConfigs {
     public HandlerMappingIntrospector mvcHandlerMappingIntrospector() {
         return new HandlerMappingIntrospector();
     }
+    
+    @Bean
+    public CustomAuthorizationManager verifiedTeacher() {
+        return CustomAuthorizationManager.verifiedTeacher();
+    }
+
+    @Bean
+    public CustomAuthorizationManager verifiedTeacherAndOwner() {
+        return CustomAuthorizationManager.verifiedTeacherAndOwner();
+    }
+
+    @Bean
+    public CustomAuthorizationManager adminOnly() {
+        return CustomAuthorizationManager.adminOnly();
+    }
+
+
 
     @Bean
     @Order(1)
@@ -72,16 +89,20 @@ public class SpringSecurityConfigs {
             .csrf(csrf -> csrf.disable())
             .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/login", "/api/auth/register","/api/courses","/api/courses/**", "/api/public/**").permitAll()
-                .requestMatchers("/api/secure/stats/**").access(CustomAuthorizationManager.adminOnly())
-                .requestMatchers("/api/secure/auth/profile").authenticated()
-                .requestMatchers("/api/secure/get_ussers_of_course").access(CustomAuthorizationManager.verifiedTeacher())
-                .requestMatchers(HttpMethod.GET, "/api/secure/courses/**", "/api/secure/chapters/**", "/api/secure/lessons/**")
-        .authenticated()   
-                .requestMatchers("/api/secure/courses","/api/secure/chapters","/api/secure/lessons").access(CustomAuthorizationManager.verifiedTeacher())
-                .requestMatchers("/api/getcourse/**").permitAll()
-
+                .requestMatchers("/api/auth/login", "/api/auth/register","/api/courses","/api/courses/**").permitAll()
                     
+                .requestMatchers("/api/secure/stats/**").access(adminOnly())
+                    
+                .requestMatchers("/api/secure/get_ussers_of_course").access(verifiedTeacher())
+                    
+                .requestMatchers(HttpMethod.PUT,"/api/secure/courses/{id}").access(verifiedTeacherAndOwner())
+                .requestMatchers(HttpMethod.DELETE,"/api/secure/courses/{id}").access(verifiedTeacherAndOwner())
+                .requestMatchers(HttpMethod.GET, "/api/secure/courses/**", "/api/secure/chapters/**", "/api/secure/lessons/**").authenticated()
+                    
+                    
+                .requestMatchers("/api/secure/courses","/api/secure/chapters","/api/secure/lessons").access(verifiedTeacher())
+                .requestMatchers("/api/secure/auth/profile").authenticated()
+                .requestMatchers("/api/getcourse/**").permitAll()
                 .anyRequest().authenticated()
             )
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
@@ -150,7 +171,7 @@ public class SpringSecurityConfigs {
 
         CorsConfiguration config = new CorsConfiguration();
 
-        config.setAllowedOrigins(List.of("http://localhost:3000/")); 
+        config.setAllowedOrigins(List.of("http://localhost:3000/","https://bc6429cdf360.ngrok-free.app/")); 
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
         config.setExposedHeaders(List.of("Authorization"));

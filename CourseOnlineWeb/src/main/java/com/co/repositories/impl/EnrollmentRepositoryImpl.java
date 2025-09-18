@@ -73,7 +73,7 @@ public class EnrollmentRepositoryImpl implements EnrollmentRepository {
                 Predicate courseTitleLike = b.like(root.get("courseId").get("title"), String.format("%%%s%%", courseTitle));
                 predicates.add(b.or(courseTitleLike));
             }
-            
+
             String status = params.get("status");
             if (status != null && !status.isEmpty()) {
                 predicates.add(b.equal(root.get("status"), status));
@@ -164,9 +164,15 @@ public class EnrollmentRepositoryImpl implements EnrollmentRepository {
         CriteriaQuery<Course> cq = b.createQuery(Course.class);
         Root<Enrollment> root = cq.from(Enrollment.class);
 
+        // Tạo điều kiện WHERE
+        Predicate condition = b.and(
+                b.equal(root.get("userId").get("id"), userId),
+                b.equal(root.get("status"), "success")
+        );
+
         // SELECT e.courseId
         cq.select(root.get("courseId"))
-                .where(b.equal(root.get("userId").get("id"), userId));
+                .where(condition);
 
         // Sắp xếp
         String orderBy = params.get("orderBy");
@@ -189,7 +195,7 @@ public class EnrollmentRepositoryImpl implements EnrollmentRepository {
 
         return q.getResultList();
     }
-    
+
     @Override
     public List<User> getUsersByCourseId(int courseId, Map<String, String> params) {
         Session s = this.factory.getObject().getCurrentSession();
@@ -209,20 +215,20 @@ public class EnrollmentRepositoryImpl implements EnrollmentRepository {
             cq.orderBy(b.asc(root.get("userId").get(orderBy))); // hoặc desc tùy nhu cầu
         }
 
-    Query<User> q = s.createQuery(cq);
+        Query<User> q = s.createQuery(cq);
 
-    // Phân trang
-    if (params != null) {
-        String p = params.get("page");
-        if (p != null && !p.isEmpty()) {
-            int page = Integer.parseInt(p);
-            int start = (page - 1) * PAGE_SIZE;
-            q.setFirstResult(start);
-            q.setMaxResults(PAGE_SIZE);
+        // Phân trang
+        if (params != null) {
+            String p = params.get("page");
+            if (p != null && !p.isEmpty()) {
+                int page = Integer.parseInt(p);
+                int start = (page - 1) * PAGE_SIZE;
+                q.setFirstResult(start);
+                q.setMaxResults(PAGE_SIZE);
+            }
         }
-    }
 
-    return q.getResultList();
-}
+        return q.getResultList();
+    }
 
 }

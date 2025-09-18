@@ -54,19 +54,19 @@ public class CourseServicesImpl implements CourseServices {
             return null;
         }
 
-        CourseDTO courseDto = new CourseDTO();
-        courseDto.setId(c.getId());
-        courseDto.setTitle(c.getTitle());
-        courseDto.setDescription(c.getDescription());
-        courseDto.setImageUrl(c.getImageUrl());
-        courseDto.setIntroVideoUrl(c.getIntroVideoUrl());
-        courseDto.setIsPublic(c.getPublic1());
-        courseDto.setTuitionFee(c.getTuitionFee());
-        courseDto.setCreatedAt(c.getCreatedAt());
-        courseDto.setTeacherId(c.getTeacherId().getId());
-        courseDto.setTeacherName(c.getTeacherId().getFullName());
+        CourseDTO courseDto = new CourseDTO(c);
+//        courseDto.setId(c.getId());
+//        courseDto.setTitle(c.getTitle());
+//        courseDto.setDescription(c.getDescription());
+//        courseDto.setImageUrl(c.getImageUrl());
+//        courseDto.setIntroVideoUrl(c.getIntroVideoUrl());
+//        courseDto.setIsPublic(c.getPublic1());
+//        courseDto.setTuitionFee(c.getTuitionFee());
+//        courseDto.setCreatedAt(c.getCreatedAt());
+//        courseDto.setTeacherId(c.getTeacherId().getId());
+//        courseDto.setTeacherName(c.getTeacherId().getFullName());
         courseDto.setLessonsCount(c.getLessonsCount());
-        courseDto.setIntroVideoUrl(c.getIntroVideoUrl());
+//        courseDto.setIntroVideoUrl(c.getIntroVideoUrl());
         // map thêm các field cần thiết
 
         if (includeChapters && c.getChapterSet() != null) {

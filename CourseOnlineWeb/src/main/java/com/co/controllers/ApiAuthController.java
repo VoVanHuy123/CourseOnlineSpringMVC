@@ -122,9 +122,10 @@ public class ApiAuthController {
     @PutMapping(path = "/secure/auth/users/{id}",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> update(@ModelAttribute UserDTO user) {
+    public ResponseEntity<?> update(@PathVariable("id") Integer id,@ModelAttribute UserDTO user) {
         this.userServices.addOrUpdate(user);
-        return ResponseEntity.status(HttpStatus.OK).body("Update thành công");
+        UserDTO updatedUser = this.userServices.getUserById(id);
+        return ResponseEntity.ok(updatedUser);
     }
     @DeleteMapping("/secure/auth/users/{id}")
     public ResponseEntity<?> delete(@PathVariable("id") Integer id){

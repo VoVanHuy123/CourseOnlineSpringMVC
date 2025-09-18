@@ -81,6 +81,7 @@ public class UserServicesImpl implements UserServices {
             } else {
                 u = new User();
                 u.setCreatedAt(new Date());
+                u.setPassword(user.getPassword());
             }
 
         } else {

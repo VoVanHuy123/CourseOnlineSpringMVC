@@ -57,6 +57,10 @@ public class CourseDTO {
     private String teacherName;
     private int teacherId;
     
+    private String teacherNumber;
+    private String teacherEmail;
+    private String teacherAvatar;
+    
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private MultipartFile imageFile;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
@@ -70,11 +74,14 @@ public class CourseDTO {
         this.description = course.getDescription();
         this.tuitionFee = course.getTuitionFee();
         this.imageUrl = course.getImageUrl();
-        this.introVideoUrl = course.getImageUrl();
+        this.introVideoUrl = course.getIntroVideoUrl();
         this.createdAt = course.getCreatedAt();
         this.isPublic = course.getPublic1();
         this.teacherId = course.getTeacherId().getId();
         this.teacherName = course.getTeacherId().getFullName();
+        this.teacherAvatar=course.getTeacherId().getAvatar();
+        this.teacherNumber=course.getTeacherId().getPhoneNumber();
+        this.teacherEmail = course.getTeacherId().getEmail();
     }
     /**
      * @return the title
@@ -272,6 +279,48 @@ public class CourseDTO {
      */
     public void setTeacherId(int teacherId) {
         this.teacherId = teacherId;
+    }
+
+    /**
+     * @return the teacherNumber
+     */
+    public String getTeacherNumber() {
+        return teacherNumber;
+    }
+
+    /**
+     * @param teacherNumber the teacherNumber to set
+     */
+    public void setTeacherNumber(String teacherNumber) {
+        this.teacherNumber = teacherNumber;
+    }
+
+    /**
+     * @return the teacherEmail
+     */
+    public String getTeacherEmail() {
+        return teacherEmail;
+    }
+
+    /**
+     * @param teacherEmail the teacherEmail to set
+     */
+    public void setTeacherEmail(String teacherEmail) {
+        this.teacherEmail = teacherEmail;
+    }
+
+    /**
+     * @return the teacherAvatar
+     */
+    public String getTeacherAvatar() {
+        return teacherAvatar;
+    }
+
+    /**
+     * @param teacherAvatar the teacherAvatar to set
+     */
+    public void setTeacherAvatar(String teacherAvatar) {
+        this.teacherAvatar = teacherAvatar;
     }
 
     

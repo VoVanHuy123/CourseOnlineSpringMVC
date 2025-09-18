@@ -68,7 +68,7 @@ public class ApiCourseController {
         this.courseServices.addOrUpdate(course);
         return ResponseEntity.status(HttpStatus.CREATED).body("Tạo thành công");
     }
-    @PutMapping(path = "/secure/courses",
+    @PutMapping(path = "/secure/courses/{id}",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> update(@ModelAttribute CourseDTO course) {

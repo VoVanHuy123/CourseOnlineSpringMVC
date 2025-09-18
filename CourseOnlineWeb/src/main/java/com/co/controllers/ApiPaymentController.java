@@ -32,7 +32,8 @@ public class ApiPaymentController {
     private final String vnp_TmnCode = "L3K1P92Z";
     private final String vnp_HashSecret = "TFCTA1RVON3PJUPWF6U6E6PMNE1SMWD3";
     private final String vnp_PayUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-    private final String vnp_ReturnUrl = "https://cacb544b215d.ngrok-free.app/CourseOnline/api/payments/vnpay/return";
+//    private final String vnp_ReturnUrl = "https://cacb544b215d.ngrok-free.app/CourseOnline/api/payments/vnpay/return";
+    private final String vnp_ReturnUrl = " https://bc6429cdf360.ngrok-free.app//CourseOnline/api/payments/vnpay/return";
     //Số thẻ	9704198526191432198
     //Tên chủ thẻ	NGUYEN VAN A
     //Ngày phát hành	07/15
