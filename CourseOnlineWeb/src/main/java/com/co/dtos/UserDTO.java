@@ -6,6 +6,10 @@ package com.co.dtos;
 
 import com.co.pojo.User;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import java.util.Date;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -15,19 +19,34 @@ import org.springframework.web.multipart.MultipartFile;
  */
 public class UserDTO {
     private Integer id;
+    @NotBlank(message = "Họ không được để trống")
+    @Size(max = 50, message = "Họ không được vượt quá 50 ký tự")
     private String firstName;
+
+    @NotBlank(message = "Tên không được để trống")
+    @Size(max = 50, message = "Tên không được vượt quá 50 ký tự")
     private String lastName;
-    private String avatar;      // URL hoặc tên file ảnh
+
+    private String avatar;
+
+    @NotBlank(message = "Email không được để trống")
+    @Email(message = "Email không đúng định dạng")
     private String email;
+
+    @NotBlank(message = "Tên đăng nhập không được để trống")
     private String username;
+
+    @Pattern(regexp = "^(\\+?\\d{1,3})?\\d{9,10}$", message = "Số điện thoại không hợp lệ")
     private String phoneNumber;
+
+    @NotBlank(message = "Vai trò không được để trống")
     private String role;
     private Boolean isVerify;
     private Date createdAt;
     private MultipartFile avatarFile;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
-    // Tùy chọn: hiển thị tên đầy đủ
+   
     public String getFullName() {
         return getFirstName() + " " + getLastName();
     }

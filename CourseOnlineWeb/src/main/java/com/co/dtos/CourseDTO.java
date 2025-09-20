@@ -21,16 +21,12 @@ import org.springframework.web.multipart.MultipartFile;
  */
 public class CourseDTO {
 
-    /**
-     * @return the isPublic
-     */
+  
     public Boolean getIsPublic() {
         return isPublic;
     }
 
-    /**
-     * @param isPublic the isPublic to set
-     */
+    
     public void setIsPublic(Boolean isPublic) {
         this.isPublic = isPublic;
     }
@@ -41,8 +37,6 @@ public class CourseDTO {
     @NotBlank(message = "Mô tả không được để trống")
     private String description;
 
-//    @NotNull(message = "Học phí không được bỏ trống")
-//    @DecimalMin(value = "0.0", message = "Học phí phải >= 0")
     private BigDecimal tuitionFee = BigDecimal.ZERO;
     
     private String imageUrl;

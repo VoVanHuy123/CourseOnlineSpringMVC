@@ -61,6 +61,7 @@
                     <option value="admin">Quản trị viên</option>
                 </select>
                 <label for="role">Vai trò</label>
+                <div class="text-danger" th:if="${#fields.hasErrors('role')}" th:errors="*{role}"></div>
             </div>
 
             <!-- Xác minh -->

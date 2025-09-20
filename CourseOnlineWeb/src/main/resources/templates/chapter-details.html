@@ -11,27 +11,34 @@
     <main class="container">
         <h1 class="text-center text-info mt-2">QUẢN LÝ KHÓA HỌC</h1>
         <form method="post" th:object="${chapter}" th:action="@{/admin/chapters}" enctype="multipart/form-data">
+            <!-- Tiêu đề chương -->
             <div class="form-floating mb-3 mt-3">
                 <input type="text" class="form-control" id="title" th:field="*{title}" placeholder="Tên chương">
                 <label for="title">Tên chương</label>
+                <div class="text-danger" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></div>
             </div>
 
+            <!-- Mô tả -->
             <div class="form-floating mb-3 mt-3">
                 <textarea class="form-control" id="description" th:field="*{description}" placeholder="Mô tả" style="height: 100px"></textarea>
                 <label for="description">Mô tả</label>
+                <div class="text-danger" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></div>
             </div>
 
+            <!-- Thứ tự chương -->
             <div class="form-floating mb-3 mt-3">
                 <input type="number" class="form-control" id="orderIndex" th:field="*{orderIndex}" placeholder="Thứ tự chương">
                 <label for="orderIndex">Thứ tự</label>
+                <div class="text-danger" th:if="${#fields.hasErrors('orderIndex')}" th:errors="*{orderIndex}"></div>
             </div>
 
+
             <div class="form-floating mb-3 mt-3">
-<!--                <select class="form-select" id="courseId" th:field="*{courseId}">
-                    <option value="">-- Chọn khóa học --</option>
-                    <option th:each="c : ${courses}" th:value="${c.id}" th:text="${c.title}"></option>
-                </select>
-                <label for="courseId">Khóa học</label>-->
+                <!--                <select class="form-select" id="courseId" th:field="*{courseId}">
+                                    <option value="">-- Chọn khóa học --</option>
+                                    <option th:each="c : ${courses}" th:value="${c.id}" th:text="${c.title}"></option>
+                                </select>
+                                <label for="courseId">Khóa học</label>-->
                 <input type="number" class="form-control" id="courseId" th:field="*{courseId}" placeholder="id khóa học">
                 <label for="courseId">ID khóa học</label>
             </div>

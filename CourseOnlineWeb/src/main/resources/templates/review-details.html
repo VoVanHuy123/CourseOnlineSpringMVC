@@ -1,9 +1,9 @@
 <!doctype html>
 <html xmlns:th="http://www.thymeleaf.org">
     <head>
-        <th:object th:replace="base :: bt"></th:object>
-    </head>
-    <body>
+    <th:object th:replace="base :: bt"></th:object>
+</head>
+<body>
     <div th:replace="base :: menu"></div>
 
     <main class="container">
@@ -18,25 +18,29 @@
 
             <!-- Comment -->
             <div class="form-floating mb-3 mt-3">
-                <textarea class="form-control" id="comment" th:field="*{comment}" placeholder="Nhận xét"></textarea>
+                <textarea class="form-control" id="comment" th:field="*{comment}" placeholder="Nhận xét" style="height: 100px"></textarea>
                 <label for="comment">Nhận xét</label>
                 <div class="text-danger" th:if="${#fields.hasErrors('comment')}" th:errors="*{comment}"></div>
             </div>
 
             <!-- Chọn Course -->
             <div class="mb-3">
-                <label>Khóa học</label>
-                <select th:field="*{courseId}" class="form-control">
+                <label for="courseId" class="form-label">Khóa học</label>
+                <select id="courseId" th:field="*{courseId}" class="form-control">
+                    <option value="">-- Chọn khóa học --</option>
                     <option th:each="c : ${courses}" th:value="${c.id}" th:text="${c.title}"></option>
                 </select>
+                <div class="text-danger" th:if="${#fields.hasErrors('courseId')}" th:errors="*{courseId}"></div>
             </div>
 
             <!-- Chọn User -->
             <div class="mb-3">
-                <label>Người dùng</label>
-                <select th:field="*{userId}" class="form-control">
+                <label for="userId" class="form-label">Người dùng</label>
+                <select id="userId" th:field="*{userId}" class="form-control">
+                    <option value="">-- Chọn người dùng --</option>
                     <option th:each="u : ${users}" th:value="${u.id}" th:text="${u.username}"></option>
                 </select>
+                <div class="text-danger" th:if="${#fields.hasErrors('userId')}" th:errors="*{userId}"></div>
             </div>
 
             <!-- Ngày tạo -->
@@ -45,6 +49,7 @@
                        th:value="${#dates.format(review.createdAt, 'dd/MM/yyyy')}" readonly>
                 <label>Ngày tạo</label>
             </div>
+
 
             <!-- Hidden -->
             <input type="hidden" th:field="*{id}"/>
@@ -59,6 +64,6 @@
 
     <div th:replace="base :: footer"></div>
     <script th:src="@{/js/main.js}"></script>
-    </body>
+</body>
 </html>
 

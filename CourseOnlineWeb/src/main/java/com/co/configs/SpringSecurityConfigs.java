@@ -72,6 +72,10 @@ public class SpringSecurityConfigs {
     public CustomAuthorizationManager verifiedTeacherAndOwner() {
         return CustomAuthorizationManager.verifiedTeacherAndOwner();
     }
+    @Bean
+    public CustomAuthorizationManager verifiedStudentAndReviewOwner() {
+        return CustomAuthorizationManager.verifiedStudentAndReviewOwner();
+    }
 
     @Bean
     public CustomAuthorizationManager adminOnly() {
@@ -85,11 +89,11 @@ public class SpringSecurityConfigs {
     public SecurityFilterChain apiSecurity(HttpSecurity http, JWTFilter jwtFilter) throws Exception {
         http
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-            .securityMatcher("/api/**") // chỉ áp dụng cho API
+            .securityMatcher("/api/**") 
             .csrf(csrf -> csrf.disable())
             .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/login", "/api/auth/register","/api/courses","/api/courses/**").permitAll()
+                .requestMatchers("/api/auth/login", "/api/auth/register","/api/courses","/api/courses/**","/api/payments/vnpay/return").permitAll()
                     
                 .requestMatchers("/api/secure/stats/**").access(adminOnly())
                     
@@ -97,6 +101,10 @@ public class SpringSecurityConfigs {
                     
                 .requestMatchers(HttpMethod.PUT,"/api/secure/courses/{id}").access(verifiedTeacherAndOwner())
                 .requestMatchers(HttpMethod.DELETE,"/api/secure/courses/{id}").access(verifiedTeacherAndOwner())
+                .requestMatchers(HttpMethod.PUT,"/api/secure/reviews/{id}").access(verifiedStudentAndReviewOwner())
+                .requestMatchers(HttpMethod.DELETE,"/api/secure/reviews/{id}").access(verifiedStudentAndReviewOwner())
+                
+                 
                 .requestMatchers(HttpMethod.GET, "/api/secure/courses/**", "/api/secure/chapters/**", "/api/secure/lessons/**").authenticated()
                     
                     
@@ -116,7 +124,7 @@ public class SpringSecurityConfigs {
     public SecurityFilterChain webSecurity(HttpSecurity http) throws Exception {
         http
             
-            .securityMatcher("/**") // tất cả request còn lại = web
+            .securityMatcher("/**")
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/", "/home", "/css/**", "/js/**").permitAll()
                 .requestMatchers("/admin/**").hasAuthority("admin")
@@ -171,7 +179,7 @@ public class SpringSecurityConfigs {
 
         CorsConfiguration config = new CorsConfiguration();
 
-        config.setAllowedOrigins(List.of("http://localhost:3000/","https://bc6429cdf360.ngrok-free.app/")); 
+        config.setAllowedOrigins(List.of("http://localhost:3000/","https://3ff2959c914c.ngrok-free.app/")); 
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
         config.setExposedHeaders(List.of("Authorization"));

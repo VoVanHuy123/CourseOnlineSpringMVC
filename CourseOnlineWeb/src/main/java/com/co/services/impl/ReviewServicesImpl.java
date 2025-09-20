@@ -65,7 +65,36 @@ public class ReviewServicesImpl implements ReviewServices{
 
         this.reviewRepo.addOrUpdate(r);
     }
+    @Override
+    public ReviewDTO addOrUpdateReview(ReviewDTO dto){
+        Review r;
+        if (dto.getId() != null) {
+            r = this.reviewRepo.getReviewById(dto.getId());
+            if (r == null) throw new IllegalArgumentException("Review không tồn tại!");
+        } else {
+            r = new Review();
+            r.setCreatedAt(new Date());
+        }
 
+        r.setRating(dto.getRating());
+        r.setComment(dto.getComment());
+
+        if (dto.getCourseId() != null) {
+            Course c = new Course();
+            c.setId(dto.getCourseId());
+            r.setCourseId(c);
+        }
+
+        if (dto.getUserId() != null) {
+            User u = new User();
+            u.setId(dto.getUserId());
+            r.setUserId(u);
+        }
+
+//        Review newReview = this.reviewRepo.addOrUpdateReview(r);
+        ReviewDTO review = new ReviewDTO(this.reviewRepo.addOrUpdateReview(r));
+        return review;
+    }
     @Override
     public void delete(int id) {
         this.reviewRepo.delete(id);

@@ -11,13 +11,18 @@
     <main class="container">
         <h1 class="text-center text-info mt-2">QUẢN LÝ KHÓA HỌC</h1>
         <form method="post" th:object="${course}" th:action="@{/admin/courses}" enctype="multipart/form-data">
+            <!-- Tên khóa học -->
             <div class="form-floating mb-3 mt-3">
                 <input type="text" class="form-control" id="title" th:field="*{title}" placeholder="Tên khóa học">
-                <label for="name">Tên khóa học</label>
+                <label for="title">Tên khóa học</label>
+                <div class="text-danger" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></div>
             </div>
+
+            <!-- Mô tả -->
             <div class="form-floating mb-3 mt-3">
                 <input type="text" class="form-control" id="description" th:field="*{description}" placeholder="Mô tả">
-                <label for="name">Mô tả</label>
+                <label for="description">Mô tả</label>
+                <div class="text-danger" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></div>
             </div>
             <div class="form-floating mb-3 mt-3">
                 <input type="text" class="form-control" id="teacherId" th:field="*{teacherId}" placeholder="Mô tả">

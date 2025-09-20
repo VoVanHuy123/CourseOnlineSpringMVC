@@ -6,9 +6,11 @@ package com.co.controllers;
 
 import com.co.configs.CustomUserDetails;
 import com.co.dtos.CourseDTO;
+import com.co.dtos.ReviewDTO;
 import com.co.services.CourseServices;
 import com.co.services.LessonProgressServices;
 import com.co.services.LessonServices;
+import com.co.services.ReviewServices;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,6 +48,8 @@ public class ApiCourseController {
     private  LessonServices lessonServices;
     @Autowired
     private LessonProgressServices lpServices;
+    @Autowired
+    private ReviewServices reviewServices;
 
     @GetMapping("/courses")
     public ResponseEntity<List<CourseDTO>> list(@RequestParam Map<String, String> params) {
@@ -92,6 +96,13 @@ public class ApiCourseController {
         body.put("totalLessons", String.valueOf(totalLessons));
         body.put("totalCompleteLessons", String.valueOf(totalCompleteLessons));
         return ResponseEntity.ok(body);
+    }
+    
+    @GetMapping("/courses/{id}/reviews")
+    public ResponseEntity<List<ReviewDTO>> listReview(@PathVariable("id") int id){
+        Map<String,String> params = new HashMap<>();
+        params.put("courseId", String.valueOf(id));
+        return ResponseEntity.ok(this.reviewServices.getReviews(params));
     }
     
 }

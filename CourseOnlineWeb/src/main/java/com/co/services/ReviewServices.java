@@ -18,5 +18,6 @@ public interface ReviewServices {
     public void addOrUpdate(ReviewDTO review);
     public void delete(int id);
     public long countReviews(Map<String, String> params);
+    public ReviewDTO addOrUpdateReview(ReviewDTO review);
     
 }

@@ -24,11 +24,10 @@ public class ChapterDTO {
     private Date createdAt;
     private Date updatedAt;
 
-    // chỉ lấy id hoặc title của course thay vì cả object
+    
     private Integer courseId;
     private String courseTitle;
 
-    // nếu cần trả về danh sách lessons
     
     private List<LessonNameDTO> lessons;
 
@@ -60,7 +59,8 @@ public class ChapterDTO {
         this.courseTitle = courseTitle;
     }
 
-    // getters & setters
+
+    
     public Integer getId() {
         return id;
     }

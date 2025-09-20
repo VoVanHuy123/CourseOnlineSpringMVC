@@ -16,16 +16,15 @@ public class EnrollmentDTO {
     private Date enrolledAt;
     private String status;
 
-    // Chỉ giữ thông tin cơ bản về course
+   
     private Integer courseId;
     private String courseTitle;
 
-    // Chỉ giữ thông tin cơ bản về user
-    private Integer userId;
-    private String userFullName; // hoặc email
 
-    // Thông tin về payments (nếu muốn)
-//    private Set<PaymentDTO> payments;
+    private Integer userId;
+    private String userFullName; 
+
+
 
     /**
      * @return the id

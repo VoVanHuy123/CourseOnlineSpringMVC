@@ -53,6 +53,7 @@ public class ReviewRepositoryImpl implements ReviewRepository{
         }
 
         cq.where(predicates.toArray(new Predicate[0]));
+        cq.orderBy(b.desc(root.get("createdAt")));
         Query<Review> q = s.createQuery(cq);
 
         // phân trang
@@ -116,5 +117,16 @@ public class ReviewRepositoryImpl implements ReviewRepository{
         cq.where(predicates.toArray(new Predicate[0]));
 
         return s.createQuery(cq).getSingleResult();
+    }
+    
+    @Override
+    public Review addOrUpdateReview(Review review) {
+        Session s = this.factory.getObject().getCurrentSession();
+        if (review.getId() != null) {
+            review = (Review) s.merge(review); // merge trả về entity đã được quản lý
+        } else {
+            s.persist(review); // persist không trả về, nhưng review sẽ có id sau flush
+        }
+        return review; // ✅ trả về review với id đã có
     }
 }

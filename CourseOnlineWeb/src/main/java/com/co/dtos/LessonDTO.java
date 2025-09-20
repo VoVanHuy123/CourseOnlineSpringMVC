@@ -27,7 +27,7 @@ public class LessonDTO {
     @Min(value = 1, message = "Thứ tự phải >= 1")
     private Integer lessonOrder;
 
-    // chỉ giữ thông tin nhẹ về chapter (tránh vòng lặp vô hạn)
+  
     @NotNull(message = "Id chương không được bỏ trống")
     private Integer chapterId;
     private String chapterTitle;

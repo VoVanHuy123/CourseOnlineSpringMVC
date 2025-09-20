@@ -65,7 +65,6 @@ public class ApiAuthController {
                         .body("Sai thông tin đăng nhập");
             }
         } catch (Exception e) {
-            // Bắt cả khi username không tồn tại hoặc query fail
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body("Sai thông tin đăng nhập");
         }
@@ -82,8 +81,6 @@ public class ApiAuthController {
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> create(@ModelAttribute UserDTO user) {
-//        this.userServices.addOrUpdate(user);
-//        return new ResponseEntity<>( HttpStatus.CREATED);
         try {
             this.userServices.addOrUpdate(user);
             return ResponseEntity.status(HttpStatus.CREATED).body("Đăng ký thành công!");
@@ -96,7 +93,8 @@ public class ApiAuthController {
     
     @GetMapping("/secure/get_ussers_of_course/{courseId}")
     public ResponseEntity<List<Map<String, Object>>> getUsersOfCourse(@PathVariable("courseId") int courseId) {
-        List<UserDTO> users = this.enrollmentServices.getUsersByCourseId(courseId,new HashMap<>()); // danh sách user của khóa học
+        List<UserDTO> users = this.enrollmentServices.getUsersByCourseId(courseId,new HashMap<>()); 
+        
         int totalLessons = this.courseServices.getCourseById(courseId, false).getLessonsCount();
 
         List<Map<String, Object>> result = new ArrayList<>();

@@ -37,7 +37,8 @@
                     <option th:each="ch : ${chapters}" th:value="${ch.id}" th:text="${ch.title}"></option>
                 </select>-->
                 <input class="form-control" type="number" id="chapterId" th:field="*{chapterId}">
-                <label for="chapterId">Chọn chương</label>
+                <label for="chapterId">Chọn chương id</label>
+                <div class="text-danger" th:if="${#fields.hasErrors('chapterId')}" th:errors="*{chapterId}"></div>
                 <div class="text-danger" th:if="${#fields.hasErrors('chapterId')}" th:errors="*{chapterId}"></div>
             </div>
 

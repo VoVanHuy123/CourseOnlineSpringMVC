@@ -38,10 +38,8 @@ public class ApiEnrollmentController {
         List<EnrollmentDTO> list = this.enrollmentServices.getEnrollments(params);
 
         if (list != null && !list.isEmpty()) {
-            // Có enrollment
-            return ResponseEntity.ok(list); // hoặc chỉ return ResponseEntity.ok().build()
+            return ResponseEntity.ok(list); 
         } else {
-            // Không có enrollment
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Enrollment not found");
         }
     }

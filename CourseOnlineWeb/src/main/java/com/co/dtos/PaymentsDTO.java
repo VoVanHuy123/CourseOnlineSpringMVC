@@ -5,6 +5,9 @@
 package com.co.dtos;
 
 import com.co.pojo.Payments;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.Date;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,11 +18,23 @@ import org.springframework.web.multipart.MultipartFile;
 
 public class PaymentsDTO {
     private Integer id;
+
+    @NotNull(message = "Số tiền không được để trống")
+    @DecimalMin(value = "0.0", inclusive = false, message = "Số tiền phải lớn hơn 0")
     private BigDecimal amount;
+
+    @NotBlank(message = "Phương thức thanh toán không được để trống")
     private String method;
+
+    @NotBlank(message = "Mã giao dịch không được để trống")
     private String transactionCode;
+
+    @NotBlank(message = "Trạng thái không được để trống")
     private String status;
+
     private Date paidAt;
+
+    @NotNull(message = "Enrollment ID không được để trống")
     private Integer enrollmentId;
 
     

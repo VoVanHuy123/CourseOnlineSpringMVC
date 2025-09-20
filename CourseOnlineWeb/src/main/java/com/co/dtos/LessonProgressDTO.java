@@ -7,6 +7,9 @@ package com.co.dtos;
 import com.co.pojo.Lesson;
 import com.co.pojo.LessonProgress;
 import com.co.pojo.User;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import java.util.Date;
 /**
  *
@@ -14,11 +17,23 @@ import java.util.Date;
  */
 public class LessonProgressDTO {
      private Integer id;
+
+    @NotNull(message = "Trạng thái hoàn thành không được để trống")
     private Boolean isCompleted;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     private Date completedAt;
+
+    @NotNull(message = "Vui lòng chọn bài học")
+    @Positive(message = "Bài học không hợp lệ")
     private Integer lessonId;
-    private String lessonTitle; 
+
+    private String lessonTitle;
+
+    @NotNull(message = "Vui lòng chọn người dùng")
+    @Positive(message = "Người dùng không hợp lệ")
     private Integer userId;
+
     private String userName;
 
     public LessonProgressDTO() {}

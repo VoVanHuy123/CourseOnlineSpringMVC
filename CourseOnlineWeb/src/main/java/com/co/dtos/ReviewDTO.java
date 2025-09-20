@@ -5,6 +5,10 @@
 package com.co.dtos;
 
 import com.co.pojo.Review;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import java.util.Date;
 
 /**
@@ -13,17 +17,29 @@ import java.util.Date;
  */
 public class ReviewDTO {
     private Integer id;
+    @NotNull(message = "Đánh giá không được để trống")
+    @Min(value = 1, message = "Đánh giá phải từ 1 đến 5 sao")
+    @Max(value = 5, message = "Đánh giá phải từ 1 đến 5 sao")
     private Integer rating;
+
+    @NotBlank(message = "Bình luận không được để trống")
     private String comment;
+
     private Date createdAt;
+
+    @NotNull(message = "Khoá học không được để trống")
     private Integer courseId;
+
     private String courseTitle;
+
+    @NotNull(message = "Người dùng không được để trống")
     private Integer userId;
     private String userFullName;
+    private String userAvatar;
 
     public ReviewDTO() {}
 
-    // Constructor convert từ entity -> dto
+   
     public ReviewDTO(Review r) {
         this.id = r.getId();
         this.rating = r.getRating();
@@ -36,6 +52,7 @@ public class ReviewDTO {
         if (r.getUserId() != null) {
             this.userId = r.getUserId().getId();
             this.userFullName = r.getUserId().getFullName();
+            this.userAvatar = r.getUserId().getAvatar();
         }
     }
 
@@ -56,4 +73,18 @@ public class ReviewDTO {
     public void setUserId(Integer userId) { this.userId = userId; }
     public String getUserFullName() { return userFullName; }
     public void setUserFullName(String userFullName) { this.userFullName = userFullName; }
+
+    /**
+     * @return the userAvatar
+     */
+    public String getUserAvatar() {
+        return userAvatar;
+    }
+
+    /**
+     * @param userAvatar the userAvatar to set
+     */
+    public void setUserAvatar(String userAvatar) {
+        this.userAvatar = userAvatar;
+    }
 }

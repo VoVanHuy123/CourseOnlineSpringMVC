@@ -33,7 +33,7 @@ public class ApiPaymentController {
     private final String vnp_HashSecret = "TFCTA1RVON3PJUPWF6U6E6PMNE1SMWD3";
     private final String vnp_PayUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
 //    private final String vnp_ReturnUrl = "https://cacb544b215d.ngrok-free.app/CourseOnline/api/payments/vnpay/return";
-    private final String vnp_ReturnUrl = " https://bc6429cdf360.ngrok-free.app//CourseOnline/api/payments/vnpay/return";
+    private final String vnp_ReturnUrl = " https://3ff2959c914c.ngrok-free.app/CourseOnline/api/payments/vnpay/return";
     //Số thẻ	9704198526191432198
     //Tên chủ thẻ	NGUYEN VAN A
     //Ngày phát hành	07/15
@@ -105,7 +105,7 @@ public class ApiPaymentController {
             Integer courseId = Integer.valueOf(courseIdObj.toString());
             Integer userId = Integer.valueOf(userIdObj.toString());
 
-            // Kiểm tra tồn tại
+          
             List<EnrollmentDTO> existing = enrollmentServices.getEnrollments(Map.of(
                     "courseId", courseId.toString(),
                     "userId", userId.toString()
@@ -119,7 +119,6 @@ public class ApiPaymentController {
                 ));
             }
 
-            // Tạo mới
             EnrollmentDTO newE = new EnrollmentDTO();
             newE.setCourseId(courseId);
             newE.setUserId(userId);
@@ -128,7 +127,6 @@ public class ApiPaymentController {
 
             enrollmentServices.addOrUpdate(newE);
 
-            // Lấy lại enrollment
             List<EnrollmentDTO> created = enrollmentServices.getEnrollments(Map.of(
                     "courseId", courseId.toString(),
                     "userId", userId.toString()
@@ -151,10 +149,6 @@ public class ApiPaymentController {
     }
 
     
-    /**
-     * Tạo payment mới - POST /api/secure/payments
-     * Endpoint này khớp với frontend: 'create_payment': '/secure/payments'
-     */
     @PostMapping("/secure/payments")
     public ResponseEntity<?> createPayment(@RequestBody PaymentsDTO dto) {
         try {
@@ -167,7 +161,6 @@ public class ApiPaymentController {
             if (dto.getMethod() == null || dto.getMethod().isBlank())
                 return ResponseEntity.badRequest().body(Map.of("error", "Phương thức không hợp lệ"));
 
-            // Gán default
             dto.setPaidAt(new Date());
             dto.setStatus("pending");
             if (dto.getTransactionCode() == null || dto.getTransactionCode().isBlank()) {
@@ -177,7 +170,6 @@ public class ApiPaymentController {
 
             paymentsServices.addOrUpdate(dto);
 
-            // Nếu VNPay
             if ("vnpay".equalsIgnoreCase(dto.getMethod().trim())) {
                 long amount = dto.getAmount().multiply(BigDecimal.valueOf(100)).longValue();
                 String vnp_TxnRef = dto.getTransactionCode();
@@ -192,12 +184,10 @@ public class ApiPaymentController {
                 vnp_Params.put("vnp_OrderInfo", "Thanh toan enrollmentId=" + dto.getEnrollmentId());
                 vnp_Params.put("vnp_OrderType", "other");
                 vnp_Params.put("vnp_Locale", "vn");
-                // ✅ Gắn enrollmentId và courseId để Return xử lý
                 vnp_Params.put("vnp_ReturnUrl", vnp_ReturnUrl);
                 vnp_Params.put("vnp_IpAddr", "127.0.0.1");
                 vnp_Params.put("vnp_CreateDate", new java.text.SimpleDateFormat("yyyyMMddHHmmss").format(new Date()));
 
-                // sort
                 List<String> fieldNames = new ArrayList<>(vnp_Params.keySet());
                 Collections.sort(fieldNames);
 
@@ -238,23 +228,18 @@ public class ApiPaymentController {
     }
 
     
-    /**
-     * Cập nhật payment - PUT /api/secure/payments/{id}
-     */
+    
     @PutMapping("/secure/payments/{id}")
     public ResponseEntity<?> updatePayment(@PathVariable("id") int id, @RequestBody PaymentsDTO dto) {
         try {
-            // Kiểm tra payment có tồn tại không
             PaymentsDTO existingPayment = paymentsServices.getPaymentById(id);
             if (existingPayment == null || existingPayment.getId() == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body(Map.of("error", "Không tìm thấy payment"));
             }
             
-            // Set ID cho DTO để update
             dto.setId(id);
             
-            // Validation
             if (dto.getAmount() != null && dto.getAmount().compareTo(BigDecimal.ZERO) <= 0) {
                 return ResponseEntity.badRequest()
                         .body(Map.of("error", "Số tiền không hợp lệ"));
@@ -273,13 +258,9 @@ public class ApiPaymentController {
         }
     }
     
-    /**
-     * Xóa payment - DELETE /api/secure/payments/{id}
-     */
     @DeleteMapping("/secure/payments/{id}")
     public ResponseEntity<?> deletePayment(@PathVariable("id") int id) {
         try {
-            // Kiểm tra payment có tồn tại không
             PaymentsDTO existingPayment = paymentsServices.getPaymentById(id);
             if (existingPayment == null || existingPayment.getId() == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -298,9 +279,6 @@ public class ApiPaymentController {
         }
     }
     
-    /**
-     * Đếm số lượng payments - GET /api/payments/count
-     */
     @GetMapping("/payments/count")
     public ResponseEntity<?> countPayments(@RequestParam Map<String, String> params) {
         try {
@@ -349,8 +327,7 @@ public class ApiPaymentController {
         try {
             System.out.println("VNPay Return Data: " + params);
 
-            String responseCode = params.get("vnp_ResponseCode"); // "00" = success
-            //String enrollmentIdStr = params.get("enrollmentId");
+            String responseCode = params.get("vnp_ResponseCode");
             String orderInfo = params.get("vnp_OrderInfo");
             String enrollmentIdStr = null;
             if (orderInfo != null && orderInfo.startsWith("Thanh toan enrollmentId=")) {
@@ -361,7 +338,6 @@ public class ApiPaymentController {
                 return ResponseEntity.badRequest().body("Missing enrollmentId");
             }
 
-            // Lấy enrollment
             EnrollmentDTO enrollment = enrollmentServices.getEnrollmentById(Integer.parseInt(enrollmentIdStr));
             if (enrollment == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Enrollment not found");
@@ -372,13 +348,11 @@ public class ApiPaymentController {
                 return ResponseEntity.badRequest().body("Missing vnp_TxnRef");
             }
 
-            // Lấy payment theo transactionCode
             List<PaymentsDTO> payments = paymentsServices.getPayments(Map.of("transactionCode", txnRef));
             if (payments.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Payment not found");
             }
          
-            // Lọc payment mới nhất theo ngày thanh toán hoặc ID
             PaymentsDTO payment = payments.stream()
                 .max((p1, p2) -> {
                     if (p1.getPaidAt() != null && p2.getPaidAt() != null) {
@@ -389,14 +363,12 @@ public class ApiPaymentController {
                 .orElse(payments.get(0));
             
             
-            // Đảm bảo payment có ID để update
             if (payment.getId() == null) {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                         .body("Payment không có ID, không thể cập nhật");
             }
 
 
-            // Cập nhật trạng thái
             String newStatus = "00".equals(responseCode) ? "success" : "failed";
             payment.setStatus(newStatus);
             enrollment.setStatus(newStatus);
@@ -406,13 +378,13 @@ public class ApiPaymentController {
             
  
 
-            // Redirect về React course content
             String courseId = enrollment.getCourseId() != null ? enrollment.getCourseId().toString() : "";
             String redirectUrl = "http://localhost:3000/courses/content/" + courseId;
 
             return ResponseEntity.status(HttpStatus.FOUND)
                     .header("Location", redirectUrl)
                     .build();
+            
         } catch (Exception ex) {
             ex.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

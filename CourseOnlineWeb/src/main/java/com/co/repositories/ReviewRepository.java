@@ -18,4 +18,5 @@ public interface ReviewRepository {
     public void addOrUpdate(Review review);
     public void delete(int id);
     public long countReviews(Map<String, String> params);   
+    public Review addOrUpdateReview(Review review);
 }

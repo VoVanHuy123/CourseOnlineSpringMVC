@@ -41,11 +41,6 @@ public class JWTFilter extends OncePerRequestFilter {
 
         String path = request.getRequestURI();
 
-        // Bỏ qua filter cho web route
-//        if (!path.startsWith("/auth/") && !path.startsWith("/api/")) {
-//            chain.doFilter(request, response);
-//            return;
-//        }
 
         if (path.startsWith(String.format("%s/api/secure", request.getContextPath())) == true) {
             String authHeader = request.getHeader("Authorization");

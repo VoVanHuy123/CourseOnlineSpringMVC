@@ -23,7 +23,6 @@ public class CustomUserDetails implements UserDetails {
         this.user = user;
     }
 
-    // 🔹 Lấy role từ entity User
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         System.out.println(">>> ROLE = " + user.getRole());
@@ -40,7 +39,7 @@ public class CustomUserDetails implements UserDetails {
         return user.getUsername();
     }
 
-    // 🔹 Các trạng thái mặc định
+ 
     @Override
     public boolean isAccountNonExpired() {
         return true;
@@ -61,16 +60,16 @@ public class CustomUserDetails implements UserDetails {
         return true;
     }
 
-    // 🔹 Getter custom để PreAuthorize dùng được principal.isVerify
+   
     public boolean isVerify() {
         System.out.println(">>> isVerify = " + user.getIsVerify());
-        return Boolean.TRUE.equals(user.getIsVerify()); // an toàn với null
+        return Boolean.TRUE.equals(user.getIsVerify()); 
     }
     public String getRole(){
         return user.getRole();
     }
 
-    // 🔹 Nếu cần thêm thông tin
+
     public int getId() {
         return user.getId();
     }
